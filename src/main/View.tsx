@@ -91,7 +91,7 @@ export class Main extends React.Component<Props, {}> {
     }
 
     render() {
-        if(this.props.mainState.cells.length > 0 && !this.props.mainState.websocketInitialized) {
+        if(config.event && this.props.mainState.cells.length > 0 && !this.props.mainState.websocketInitialized) {
             setTimeout(this.initializeWebSocket.bind(this), 0);
         }
 

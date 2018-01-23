@@ -14,6 +14,7 @@ export interface Config {
     username: string,
     password: string,
     master: string;
+    event: boolean;
 }
 
 declare const config: Config;
