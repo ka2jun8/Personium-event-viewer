@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "noImplicitThis": true,
+      "alwaysStrict": true,
+      "outDir": "./dist/",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "moduleResolution": "node",
+      "target": "es6",
+      "jsx": "react"
+    }
+  }
