@@ -87,6 +87,10 @@ export class RuleViewer extends React.Component<Props, {}> {
 }
 
 function ruleCardView(rule: Rule, onClickDelete: (event: any) => void) {
+    const eventType = rule.EventType || (rule as any).Type;
+    const eventObject = rule.EventObject || (rule as any).Object;
+    const service = rule.TargetUrl || (rule as any).Service;
+
     return (
         <div style={style.flexColumn}>
             <div style={style.flexRow}>
@@ -103,15 +107,15 @@ function ruleCardView(rule: Rule, onClickDelete: (event: any) => void) {
             </div>
             <div style={style.flexRow}>
                 <div style={style.label}>Type: </div>
-                <div style={style.sentence}>{rule.EventType}</div>
+                <div style={style.sentence}>{eventType}</div>
             </div>
             <div style={style.flexRow}>
                 <div style={style.label}>Object: </div>
-                <div style={style.sentence}>{rule.EventObject}</div>
+                <div style={style.sentence}>{eventObject}</div>
             </div>
             <div style={style.flexRow}>
                 <div style={style.label}>Service: </div>
-                <div style={style.sentence}>{rule.TargetUrl}</div>
+                <div style={style.sentence}>{service}</div>
             </div>
             <div style={style.flexRow}>
                 <Button type="primary">Edit</Button>
@@ -129,7 +133,8 @@ function itemGroupListView(boxRuleListMap: BoxRuleListMap, boxName: string) {
         const rules = collectionListMap[collectionName];
         const ItemList = rules.map((rule, index) => {
             const _index = boxName + "." + collectionName + "." + index;
-            return <Menu.Item index={_index} key={keyIndex++}>{rule.EventType}</Menu.Item>
+            const eventType = rule.EventType || (rule as any).Type;
+            return <Menu.Item index={_index} key={keyIndex++}>{eventType}</Menu.Item>
         });
         return (
             <Menu.ItemGroup title={collectionName} key={collectionIndex}>

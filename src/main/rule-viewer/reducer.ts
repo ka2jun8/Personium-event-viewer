@@ -43,7 +43,8 @@ export default function reducer(state: RuleViewerState = initialState, action: R
                     if(!boxRuleListMap[boxName]) {
                         boxRuleListMap[boxName] = {};
                     }
-                    const collectionName = extractCollectionName(rule.EventObject);
+                    const objctName = rule.EventObject || (rule as any).Object;
+                    const collectionName = extractCollectionName(objctName);
                     if(collectionName) {
                         if(!boxRuleListMap[boxName][collectionName]) {
                             boxRuleListMap[boxName][collectionName] = [];
