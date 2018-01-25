@@ -5,6 +5,7 @@ import { JSONEvent } from "./View";
 export enum ViewerType {
     RuleViewer = "1",
     EventViewer = "2",
+    RuleEditor = "3",
 }
 
 export interface MainState {

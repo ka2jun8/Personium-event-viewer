@@ -8,6 +8,7 @@ import {MainActionDispatcher} from "./Container";
 
 import RuleViewer from "./rule-viewer/Container";
 import EventViewer from "./event-viewer/Container";
+import RuleEditor from "./rule-editor/Container";
 import { WebSocketWrapper } from "./WebSocketWrapper";
 import {Config} from "./sagas";
 
@@ -45,6 +46,8 @@ export class Main extends React.Component<Props, {}> {
     }
 
     initializeWebSocket() {
+        console.log("initializeWebSocket"); // 2回呼ばれてない？
+
         const cells = this.props.mainState.cells;
         cells.forEach((cell) => {
             const host = config.host;
@@ -68,10 +71,23 @@ export class Main extends React.Component<Props, {}> {
             ws.enter(onConnect, onData, onDisconnect);
             setTimeout(()=>{
                 ws.subscribe("cellctl.Rule.create", "*"); 
+                ws.subscribe("*", "*"); 
                 this.wslist[cell.Name] = ws;
             }, 500);
         });
         this.props.actions.websocketInitialized();
+    }
+
+    componentDidMount() {
+        // console.log("componentDidMount");
+        if(config.event && !this.props.mainState.websocketInitialized) {
+            let initilizeTimer = setInterval(()=>{
+                if(this.props.mainState.cells.length > 0) {
+                    clearInterval(initilizeTimer);
+                    setTimeout(this.initializeWebSocket.bind(this), 0);
+                }
+            }, 500);
+        }
     }
 
     componentWillUnmount() {
@@ -91,16 +107,14 @@ export class Main extends React.Component<Props, {}> {
     }
 
     render() {
-        if(config.event && this.props.mainState.cells.length > 0 && !this.props.mainState.websocketInitialized) {
-            setTimeout(this.initializeWebSocket.bind(this), 0);
-        }
-
         let MainContents = <div/>;
 
         if(this.props.mainState.viewer === ViewerType.RuleViewer) {
             MainContents = <RuleViewer />;
         }else if(this.props.mainState.viewer === ViewerType.EventViewer) {
             MainContents = <EventViewer />;
+        }else if(this.props.mainState.viewer === ViewerType.RuleEditor) {
+            MainContents = <RuleEditor />;
         }
 
         const cellListView = this.props.mainState.cells.map((cell, index)=>{
@@ -127,6 +141,7 @@ export class Main extends React.Component<Props, {}> {
                     </Menu.SubMenu>
                     <Menu.Item index="1">Rule Viewer</Menu.Item>
                     <Menu.Item index="2">Event Viewer</Menu.Item>
+                    <Menu.Item index="3">Rule Editor</Menu.Item>
                 </Menu>
                 <div>
                     {MainContents}

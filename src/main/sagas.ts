@@ -4,9 +4,9 @@ import { PersoniumClient, PersoniumAccessToken, Rule } from "personium-client";
 import { ActionNames as MainActionNames, loginSuccess, receiveCells, SelecetViewAction, selectCell } from "./action";
 import { ActionNames as RuleViewrActionNames, receiveRules, loginSuccessForRuleViewer, reset, SelectCellAction, selectCell as selectCellForRuleViewer } from "./rule-viewer/action";
 import { ActionNames as EventViewerActionNames, selectCell as selectCellForEventViewer } from "./event-viewer/action";
+import { ActionNames as RuleEditorActionNames, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor } from "./rule-editor/action";
 import { ReduxAction } from "../store";
 import { Cell } from "./View";
-import { RuleViewerActions } from "./rule-viewer/reducer";
 
 export interface Config {
     host: string,
@@ -46,6 +46,7 @@ function* getCellList(action: ReduxAction) {
         yield put(selectCell(cells[0].Name));
         yield put(selectCellForRuleViewer(cells[0].Name));
         yield put(selectCellForEventViewer(cells[0].Name));
+        yield put(selectCellForRuleEditor(cells[0].Name));
         yield put(reset(cells[0].Name));
     }
 }
@@ -55,8 +56,24 @@ function* getRules(action: SelectCellAction) {
     yield put(receiveRules(rules));
 }
 
+function* registerRule(action: RegisterRuleAction) {
+    const rule: Rule = {
+        TargetUrl: action.inputtedValues.service,
+        Action: action.inputtedValues.action,
+        EventType: action.inputtedValues.type,
+        EventObject: action.inputtedValues.object,
+    };
+    if(action.inputtedValues.id) {
+        rule.Name = action.inputtedValues.id;
+    }
+    console.log("rule: ", rule);
+    const result: boolean = yield client.setRule(action.cell, rule, config.master);
+    yield put(registeredRule(result));
+}
+
 export default function* rootSaga() {
     yield takeEvery(MainActionNames.Login, loginPersonium);
     yield takeEvery(RuleViewrActionNames.ResetAction, getRules);
+    yield takeEvery(RuleEditorActionNames.RegisterRuleAction, registerRule);
 }
 
