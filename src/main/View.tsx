@@ -30,7 +30,6 @@ export interface Packet {
 export interface JSONEvent {
     Name?: string;
     date?: string;
-    Detail?: any;
     Type: string;
     RequestKey: string; 
     Schema: string;
@@ -39,6 +38,7 @@ export interface JSONEvent {
     Info: string;
     cellId: string;
     Subject: string;
+    Detail?: any;
 }
 
 export class Main extends React.Component<Props, {}> {
