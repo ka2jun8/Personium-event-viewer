@@ -12,7 +12,7 @@
     "element-react": "^1.4.5",
     "element-theme-default": "^1.4.12",
     "moment": "^2.20.1",
-    "personium-client": "git+https://d043e2f406ce124e9a7d8dd696935b3325d60c14:x-oauth-basic@github.labs.fujitsu.com/personium-dev/personium-client.git",
+    "personium-client": "git+https://d043e2f406ce124e9a7d8dd696935b3325d60c14:x-oauth-basic@github.labs.fujitsu.com/personium-dev/personium-client.git#feature/0.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
