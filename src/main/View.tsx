@@ -146,7 +146,3 @@ export class Main extends React.Component<Props, {}> {
     }
 }
 
-{/* <Menu.SubMenu index="Cell" title={this.props.mainState.cell}>
-{cellListView}
-</Menu.SubMenu>
-<Menu.Item index="1">Rule Viewer</Menu.Item> */}
