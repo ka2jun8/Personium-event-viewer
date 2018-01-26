@@ -80,6 +80,9 @@ export class RuleViewer extends React.Component<Props, {}> {
                         </Menu>
                     </Layout.Col>
                     <Layout.Col span={8}>
+                        <div style={style.header}>
+                            {this.props.ruleState.cell}
+                        </div>
                         <div style={style.card}>
                             {selectedRule && ruleCardView(selectedRule, this.onClickDelete.bind(this, selectedRule), this.onClickEdit.bind(this, selectedRule))}
                         </div>
@@ -122,8 +125,12 @@ function ruleCardView(rule: Rule, onClickDelete: (event: any) => void, onClickEd
                 <div style={style.sentence}>{service}</div>
             </div>
             <div style={style.flexRow}>
-                <Button onClick={onClickEdit} type="primary">Edit</Button>
-                <Button onClick={onClickDelete} type="danger">Delete</Button>
+                <div style={{margin: 10 }}>
+                    <Button onClick={onClickEdit} type="primary">Edit</Button>
+                </div>
+                <div style={{margin: 10 }}>
+                    <Button onClick={onClickDelete} type="danger">Delete</Button>
+                </div>
             </div>
         </div>
     );
@@ -161,6 +168,11 @@ function menuGroupView(boxNameList: string[], boxRuleListMap: BoxRuleListMap) {
 }
 
 const style: any = {
+    header: { 
+        margin: 30,
+        color: "#6594e0",
+        borderBottom: "solid 2px #6594e0",
+    },
     card: { width: 600, margin: 30 },
     label: { width: 100 },
     sentence: { width: 400 },

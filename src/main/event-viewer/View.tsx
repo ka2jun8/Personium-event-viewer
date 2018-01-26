@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Input, Button, Table, MessageBox, Message } from "element-react";
+import { Card, Input, Button, Table, MessageBox, Select } from "element-react";
 import * as _ from "underscore";
 import { PersoniumAccessToken } from "personium-client";
 import { EventViewerState, } from "./reducer";
@@ -10,6 +10,8 @@ interface Props {
     eventState: EventViewerState,
     actions: EventViewerActionDispatcher,
 }
+
+export const ALL_CELL = "All cell";
 
 export class EventViewer extends React.Component<Props, {}> {
     onChangeCell(value: string) {
@@ -25,11 +27,15 @@ export class EventViewer extends React.Component<Props, {}> {
     }
 
     onClickSubscribe() {
-        this.props.actions.subscribe({type: this.props.eventState.subscribeType, object: this.props.eventState.subscribeObject});
+        if(this.props.eventState.subscribeType && this.props.eventState.subscribeObject) {
+            this.props.actions.subscribe({type: this.props.eventState.subscribeType, object: this.props.eventState.subscribeObject});
+        }
     }
 
     onClickUnsubscribe() {
-        this.props.actions.unsubscribe({type: this.props.eventState.subscribeType, object: this.props.eventState.subscribeObject});
+        if(this.props.eventState.subscribeType && this.props.eventState.subscribeObject) {
+            this.props.actions.unsubscribe({type: this.props.eventState.subscribeType, object: this.props.eventState.subscribeObject});
+        }
     }
 
     onClickDetail(eventText: string) {
@@ -61,15 +67,27 @@ export class EventViewer extends React.Component<Props, {}> {
             />
         }
 
+        const subscribeActive: boolean = !!this.props.eventState.subscribeType && !!this.props.eventState.subscribeObject;
+
+        const cellList: string[] = _.union([ALL_CELL], this.props.eventState.cellList);
+        const cellListView = cellList.map(cell => {
+            return <Select.Option key={cell} label={cell} value={cell} />
+        })
+
         return (
             <div>
+                <div style={style.header}>
+                    Subscribe
+                </div>
                 <div style={style.card}>
                     <div style={style.flexColumn}>
                         <div style={style.flexRow}>
                             Cell: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.eventState.cell || ""} placeholder="Cell" onChange={this.onChangeCell.bind(this)}/>
+                            <Select value={this.props.eventState.cell || ALL_CELL} onChange={this.onChangeCell.bind(this)}>
+                                {cellListView}
+                            </Select>
                         </div>
                     </div>
                     <div>
@@ -90,12 +108,15 @@ export class EventViewer extends React.Component<Props, {}> {
                     </div>
                     <div style={style.flexRow}>
                         <div style={{margin: 5}}>
-                            <Button type="primary" onClick={this.onClickSubscribe.bind(this)}>Subscribe</Button>
+                            <Button type="primary" disabled={!subscribeActive} onClick={this.onClickSubscribe.bind(this)}>Subscribe</Button>
                         </div>
                         <div style={{margin: 5}}>
-                            <Button type="primary" onClick={this.onClickUnsubscribe.bind(this)}>Unsubscribe</Button>
+                            <Button type="primary" disabled={!subscribeActive} onClick={this.onClickUnsubscribe.bind(this)}>Unsubscribe</Button>
                         </div>
                     </div>
+                </div>
+                <div style={style.header}>
+                    Event View
                 </div>
                 <div style={style.table}>
                     {tableView}
@@ -119,32 +140,32 @@ const TableColumns = [
     {
         label: "Date",
         prop: "date",
-        width: 180,
+        width: 120,
     },
     {
         label: "cellId",
         prop: "cellId",
-        width: 180,
+        width: 120,
     },
     {
         label: "Type",
         prop: "Type",
-        width: 180,
+        width: 100,
     },
     {
         label: "RequestKey",
         prop: "RequestKey",
-        width: 180,
+        width: 130,
     },
     {
         label: "Object",
         prop: "Object",
-        width: 180,
+        width: 250,
     },
     {
         label: "Info",
         prop: "Info",
-        width: 180,
+        width: 250,
     },
     {
         label: "Detail",
@@ -170,6 +191,12 @@ const TableColumns = [
 
 
 const style: any = {
+    header: { 
+        width: 400,
+        margin: 30,
+        color: "#6594e0",
+        borderBottom: "solid 2px #6594e0",
+    },
     card: {
         width: 400,
         margin: 30,
@@ -184,7 +211,8 @@ const style: any = {
     },
     flexRow: { 
         display: "flex",
-        flexDirection: "row" 
+        flexDirection: "row",
+        margin: 5, 
     },
 };
 

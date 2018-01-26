@@ -9,6 +9,7 @@ export enum ActionNames {
     ChangeObject = "event-viewer/change-object",
     Subscribe = "event-viewer/subscribe",
     Unsubscribe = "event-viewer/unsubscribe",
+    ReceivedCellList = "event-viewer/received-cell-list",
 }
 
 export interface ReceiveEventAction extends Action {
@@ -42,6 +43,11 @@ export interface UnsubscribeAction extends Action {
     info: SubscribeCondition,
 }
 
+export interface ReceivedCellListAction extends Action {
+    type: ActionNames.ReceivedCellList,
+    cellList: string[],
+}
+
 
 export const receiveEvent = (cell: string, packet: Packet): ReceiveEventAction => ({
     type: ActionNames.ReceiveEvent,
@@ -69,8 +75,12 @@ export const subscribe = (info: SubscribeCondition): SubscribeAction => ({
     info,
 });
 
-export const unsubscribe = (info: SubscribeCondition): SubscribeAction => ({
-    type: ActionNames.Subscribe,
+export const unsubscribe = (info: SubscribeCondition): UnsubscribeAction => ({
+    type: ActionNames.Unsubscribe,
     info,
 });
 
+export const receiveCellList = (cellList: string[]): ReceivedCellListAction => ({
+    type: ActionNames.ReceivedCellList,
+    cellList: cellList,
+});

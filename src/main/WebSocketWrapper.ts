@@ -26,6 +26,7 @@ export class WebSocketWrapperManager {
     }
 
     dispose(cell?: string, disconnected?: (cell: string)=>void) {
+        // console.log("dispose");
         if(cell && this.wslist[cell]){
             this.wslist[cell].exit();
             disconnected(cell);
@@ -40,12 +41,13 @@ export class WebSocketWrapperManager {
     }
 
     subscribe(type: string, object: string, cell?: string) {
+        // console.log("subscribe: ", {type, object, cell});
         if(cell && this.wslist[cell]){
             this.wslist[cell].subscribe(type, object);
         }else {
             Object.keys(this.wslist).forEach((cellName) => {
-                if(this.wslist[cell]) {
-                    this.wslist[cell].subscribe(type, object);
+                if(this.wslist[cellName]) {
+                    this.wslist[cellName].subscribe(type, object);
                 }
             });
         }
@@ -56,8 +58,8 @@ export class WebSocketWrapperManager {
             this.wslist[cell].unsubscribe(type, object);
         }else {
             Object.keys(this.wslist).forEach((cellName) => {
-                if(this.wslist[cell]) {
-                    this.wslist[cell].unsubscribe(type, object);
+                if(this.wslist[cellName]) {
+                    this.wslist[cellName].unsubscribe(type, object);
                 }
             });
         }
@@ -76,7 +78,7 @@ class WebSocketWrapper {
     }
     enter(cell: string, onConnect: () => void, onData: (message: any) => void, onDisconnect: () => void) {
         const endpoint = "wss://"+this.host+"/"+cell+"/__event";
-        console.log("connect WebSocket: ", endpoint );
+        // console.log("connect WebSocket: ", endpoint );
         this.ws = new WebSocket(endpoint);
         this.ws.onopen = () => {
             const tokenInfo = { access_token: this.token };
@@ -100,8 +102,8 @@ class WebSocketWrapper {
     }
 
     unsubscribe(type: string, path: string) {
-        const subscribeInfo = { unsubscribe: { Type: type, Object: path } };
-        this.ws.send(JSON.stringify(subscribeInfo));
+        const unsubscribeInfo = { unsubscribe: { Type: type, Object: path } };
+        this.ws.send(JSON.stringify(unsubscribeInfo));
     }
 
     exit() {

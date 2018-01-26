@@ -1,8 +1,9 @@
 import * as moment from "moment";
-import { ActionNames, ReceiveEventAction, SelectCellAction, ChangeSubscribeTypeAction, ChangeSubscribeObjectAction, SubscribeAction, UnsubscribeAction } from "./action";
+import { ActionNames, ReceiveEventAction, SelectCellAction, ChangeSubscribeTypeAction, ChangeSubscribeObjectAction, SubscribeAction, UnsubscribeAction, ReceivedCellListAction } from "./action";
 import { JSONEvent } from "../View";
 import * as _ from "underscore";
 import { WebSocketWrapperManager } from "../WebSocketWrapper";
+import { ALL_CELL } from "./View";
 
 export interface EventViewerState {
     event: JSONEvent,
@@ -10,6 +11,7 @@ export interface EventViewerState {
     eventList: JSONEvent[],
     subscribeType: string,
     subscribeObject: string,
+    cellList: string[],
 }
 
 export type EventViewerActions = 
@@ -18,7 +20,8 @@ export type EventViewerActions =
     ChangeSubscribeTypeAction |
     ChangeSubscribeObjectAction |
     SubscribeAction |
-    UnsubscribeAction
+    UnsubscribeAction |
+    ReceivedCellListAction
     ;
 
 const initialState: EventViewerState = {
@@ -27,6 +30,7 @@ const initialState: EventViewerState = {
     eventList: [],
     subscribeType: "*",
     subscribeObject: "*",
+    cellList: [],
 };
 
 export default function reducer(state: EventViewerState = initialState, action: EventViewerActions) {
@@ -44,8 +48,11 @@ export default function reducer(state: EventViewerState = initialState, action: 
                 }
             }
             const list = state.eventList;
+            if(list.length >= 50) {
+                list.splice(0, 1);
+            }
             list.push(json);
-            return {event: json, cell: action.cell, eventList: list};
+            return _.assign({}, state, {event: json, cell: action.cell, eventList: list});
         case ActionNames.SelectCell:
             return _.assign({}, state, {cell: action.cell});
         case ActionNames.ChangeType: 
@@ -54,12 +61,22 @@ export default function reducer(state: EventViewerState = initialState, action: 
             return _.assign({}, state, {subscribeObject: action.object});
         case ActionNames.Subscribe:  
             wsman = WebSocketWrapperManager.getInstance();
-            wsman.subscribe(action.info.type, action.info.object, state.cell);
+            if(state.cell === ALL_CELL) {
+                wsman.subscribe(action.info.type, action.info.object);
+            }else {
+                wsman.subscribe(action.info.type, action.info.object, state.cell);
+            }
             return _.assign({}, state, {subscribeType: "*", subscribeObject: "*"});
         case ActionNames.Unsubscribe:  
             wsman = WebSocketWrapperManager.getInstance();
-            wsman.unsubscribe(action.info.type, action.info.object, state.cell);
+            if(state.cell === ALL_CELL) {
+                wsman.unsubscribe(action.info.type, action.info.object);
+            }else {
+                wsman.unsubscribe(action.info.type, action.info.object, state.cell);
+            }
             return _.assign({}, state, {subscribeType: "*", subscribeObject: "*"});
+        case ActionNames.ReceivedCellList:  
+            return _.assign({}, state, {cellList: action.cellList});
         default: 
             return state;
         }

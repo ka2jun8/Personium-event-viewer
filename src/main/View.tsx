@@ -47,7 +47,7 @@ export class Main extends React.Component<Props, {}> {
     }
 
     initializeWebSocket() {
-        console.log("initializeWebSocket"); // 2回呼ばれてない？
+        // console.log("initializeWebSocket"); 
 
         const cells = this.props.mainState.cells;
         cells.forEach((cell) => {
@@ -68,9 +68,9 @@ export class Main extends React.Component<Props, {}> {
                 this.props.actions.connected(cell.Name, false);
             };
             wsman.create(cell.Name, access_token, onConnect, onData, onDisconnect);
-            setTimeout(()=>{
-                wsman.subscribe("cellctl.Rule", "*", cell.Name); 
-            }, 500);
+            // setTimeout(()=>{
+            //     wsman.subscribe("cellctl.Rule", "*", cell.Name); 
+            // }, 500);
         });
         this.props.actions.websocketInitialized();
     }
