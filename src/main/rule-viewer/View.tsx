@@ -34,7 +34,7 @@ export class RuleViewer extends React.Component<Props, {}> {
         const indexOfselectedRule = Number(splittedItemInfo[2]);
         const selectedRule = boxRuleListMap[boxNameOfselectedRule][collectionNameOfselectedRule][indexOfselectedRule];
 
-        this.props.actions.selectedRule(selectedRule);
+        this.props.actions.selectedRule(selectedRule, boxNameOfselectedRule);
     }
 
     onClickDelete(selectedRule: Rule) {
@@ -61,6 +61,10 @@ export class RuleViewer extends React.Component<Props, {}> {
         });
     }
 
+    onClickEdit(selectedRule: Rule) {
+        this.props.actions.editRule(selectedRule, this.props.ruleState.box);
+    }
+
     render() {
         const rules = this.props.ruleState.rules;
         const boxNameList = this.props.ruleState.boxNameList;
@@ -77,7 +81,7 @@ export class RuleViewer extends React.Component<Props, {}> {
                     </Layout.Col>
                     <Layout.Col span={8}>
                         <div style={style.card}>
-                            {selectedRule && ruleCardView(selectedRule, this.onClickDelete.bind(this, selectedRule))}
+                            {selectedRule && ruleCardView(selectedRule, this.onClickDelete.bind(this, selectedRule), this.onClickEdit.bind(this, selectedRule))}
                         </div>
                     </Layout.Col>
                 </Layout.Row>
@@ -86,7 +90,7 @@ export class RuleViewer extends React.Component<Props, {}> {
     }
 }
 
-function ruleCardView(rule: Rule, onClickDelete: (event: any) => void) {
+function ruleCardView(rule: Rule, onClickDelete: (event: any) => void, onClickEdit:  (event: any) => void) {
     const eventType = rule.EventType || (rule as any).Type;
     const eventObject = rule.EventObject || (rule as any).Object;
     const service = rule.TargetUrl || (rule as any).Service;
@@ -118,7 +122,7 @@ function ruleCardView(rule: Rule, onClickDelete: (event: any) => void) {
                 <div style={style.sentence}>{service}</div>
             </div>
             <div style={style.flexRow}>
-                <Button type="primary">Edit</Button>
+                <Button onClick={onClickEdit} type="primary">Edit</Button>
                 <Button onClick={onClickDelete} type="danger">Delete</Button>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Input, Button} from "element-react";
+import { Input, Button, Message } from "element-react";
 import * as _ from "underscore";
 import { RuleEditorState } from "./reducer";
 import { RuleEditorActionDispatcher } from "./Container";
@@ -39,7 +39,15 @@ export class RuleEditor extends React.Component<Props, {}> {
     }
 
     render() {
-        // result = true / success!
+        if(this.props.ruleEditorState.result) {
+            setTimeout(()=>{
+                Message({
+                    type: "success",
+                    message: "Successed."
+                });
+                this.props.actions.reset(this.props.ruleEditorState.cell);
+            }, 0);
+        }
 
         return (
             <div style={style.width}>
@@ -89,7 +97,7 @@ export class RuleEditor extends React.Component<Props, {}> {
     }
 }
 const style: any = {
-    width: {width: "60%"},
+    width: { width: "60%", margin: 30 },
     flexColumn: { display: "flex", flexDirection: "column" },
     flexRow: { display: "flex", flexDirection: "row" },
 };

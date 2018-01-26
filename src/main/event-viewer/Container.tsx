@@ -3,10 +3,37 @@ import {Dispatch} from "redux";
 import {EventViewer} from "./View";
 import {ReduxAction, ReduxState} from "../../store";
 import {receiveEvent as receiveEventForMainView} from "../action";
+import { changeSubscribeType, changeSubscribeObject, subscribe, unsubscribe, selectCell } from "./action";
+
+export interface SubscribeCondition {
+    type: string,
+    object: string;
+}
 
 export class EventViewerActionDispatcher {
     constructor(private dispatch: (action: ReduxAction) => void) {
     }
+
+    changeCell(cell: string) {
+        this.dispatch(selectCell(cell));
+    }
+
+    changeSubscribeType(type: string) {
+        this.dispatch(changeSubscribeType(type));
+    }
+
+    changeSubscribeObject(object: string) {
+        this.dispatch(changeSubscribeObject(object));
+    }
+
+    subscribe(info: SubscribeCondition) {
+        this.dispatch(subscribe(info));
+    }
+
+    unsubscribe(info: SubscribeCondition) {
+        this.dispatch(unsubscribe(info));
+    }
+
 }
 
 export default connect(

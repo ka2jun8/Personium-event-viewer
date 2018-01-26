@@ -4,6 +4,9 @@ import {RuleEditor} from "./View";
 import {ReduxAction, ReduxState} from "../../store";
 import { selectedCell, changeId, changeAction, changeType, changeObject, changeService, registerRule, registeredRule, changeBox } from "./action";
 import { RuleEditorState } from "./reducer";
+import { reset } from "../rule-viewer/action";
+import { selectViewer } from "../action";
+import { ViewerType } from "../reducer";
 
 export class RuleEditorActionDispatcher {
     constructor(private dispatch: (action: ReduxAction) => void) {
@@ -35,7 +38,11 @@ export class RuleEditorActionDispatcher {
     registeredRule(sentFlag: boolean) {
         this.dispatch(registeredRule(sentFlag));
     }
-
+    reset(cell: string) {
+        this.dispatch(registeredRule(false));
+        this.dispatch(selectViewer(ViewerType.RuleViewer));
+        this.dispatch(reset(cell));
+    }
 }
 
 export default connect(

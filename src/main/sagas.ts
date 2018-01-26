@@ -66,8 +66,13 @@ function* registerRule(action: RegisterRuleAction) {
     if(action.inputtedValues.id) {
         rule.Name = action.inputtedValues.id;
     }
-    console.log("rule: ", rule);
-    const result: boolean = yield client.setRule(action.cell, rule, config.master);
+    let result: boolean = false;
+    const _id: string = rule.Name;
+    if(!_id){
+        result = yield client.setRule(action.cell, rule, config.master);
+    }else {
+        result = yield client.updateRule(action.cell, rule, _id, config.master);
+    }
     yield put(registeredRule(result));
 }
 

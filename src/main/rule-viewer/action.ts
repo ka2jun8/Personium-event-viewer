@@ -18,6 +18,7 @@ export interface ReceiveRulesAction extends Action {
 export interface SelectRuleAction extends Action {
     type: ActionNames.SelectRuleAction,
     rule: Rule,
+    box: string,
 }
 
 export interface LoginSuccessAction extends Action {
@@ -42,9 +43,10 @@ export const receiveRules = (rules: Rule[]): ReceiveRulesAction => ({
     rules: rules,
 });
 
-export const selectedRule = (rule: Rule): SelectRuleAction => ({
+export const selectedRule = (rule: Rule, box: string): SelectRuleAction => ({
     type: ActionNames.SelectRuleAction,
     rule: rule,
+    box: box,
 });
 
 export const loginSuccessForRuleViewer = (client: PersoniumClient): LoginSuccessAction => ({

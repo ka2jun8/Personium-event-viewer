@@ -16,6 +16,7 @@ export interface RuleViewerState {
     boxNameList: string[],
     selectedRule: Rule,
     cell: string,
+    box: string,
 }
 
 export type RuleViewerActions = ReceiveRulesAction | SelectRuleAction | LoginSuccessAction | ResetAction | SelectCellAction;
@@ -27,6 +28,7 @@ const initialState: RuleViewerState = {
     boxNameList: [],
     selectedRule: null,
     cell: "",
+    box: "__",
 };
 
 export default function reducer(state: RuleViewerState = initialState, action: RuleViewerActions) {
@@ -74,7 +76,8 @@ export default function reducer(state: RuleViewerState = initialState, action: R
                 rules: action.rules,
                 boxRuleListMap, 
                 boxNameList, 
-                selectedRule: state.selectedRule
+                selectedRule: action.rules[0],
+                box: state.box,
             };
         case ActionNames.SelectRuleAction: 
             return {
@@ -84,6 +87,7 @@ export default function reducer(state: RuleViewerState = initialState, action: R
                 boxRuleListMap: state.boxRuleListMap, 
                 boxNameList: state.boxNameList,
                 selectedRule: action.rule,
+                box: action.box,
             };
         case ActionNames.LoginSuccessAction: 
             return {
@@ -93,6 +97,7 @@ export default function reducer(state: RuleViewerState = initialState, action: R
                 boxRuleListMap: state.boxRuleListMap, 
                 boxNameList: state.boxNameList,
                 selectedRule: state.selectedRule,
+                box: state.box,
             };
         case ActionNames.SelectCell: 
             return {
@@ -102,6 +107,7 @@ export default function reducer(state: RuleViewerState = initialState, action: R
                 boxRuleListMap: state.boxRuleListMap, 
                 boxNameList: state.boxNameList,
                 selectedRule: state.selectedRule,
+                box: state.box,
             }
         default: 
             return state;

@@ -9,7 +9,7 @@ import {MainActionDispatcher} from "./Container";
 import RuleViewer from "./rule-viewer/Container";
 import EventViewer from "./event-viewer/Container";
 import RuleEditor from "./rule-editor/Container";
-import { WebSocketWrapper } from "./WebSocketWrapper";
+import { WebSocketWrapperManager } from "./WebSocketWrapper";
 import {Config} from "./sagas";
 
 declare const config: Config;
@@ -28,6 +28,9 @@ export interface Packet {
 }
 
 export interface JSONEvent {
+    Name?: string;
+    date?: string;
+    Detail?: any;
     Type: string;
     RequestKey: string; 
     Schema: string;
@@ -39,8 +42,6 @@ export interface JSONEvent {
 }
 
 export class Main extends React.Component<Props, {}> {
-    wslist: {[cellName: string]: WebSocketWrapper} = {};
-
     constructor(props: Props, state: any) {
         super(props, state);
     }
@@ -51,11 +52,9 @@ export class Main extends React.Component<Props, {}> {
         const cells = this.props.mainState.cells;
         cells.forEach((cell) => {
             const host = config.host;
-            const endpoint = "wss://"+host+"/"+cell.Name+"/__event";
             
             const access_token = config.master || this.props.mainState.client.personiumToken.access_token;
-            const ws = new WebSocketWrapper(endpoint, access_token);
-            
+            const wsman = WebSocketWrapperManager.getInstance(host);
             const onConnect = ()=>{
                 // console.log("onConnect");
                 this.props.actions.connected(cell.Name, true);
@@ -68,11 +67,9 @@ export class Main extends React.Component<Props, {}> {
                 // console.log("onDisconnect");
                 this.props.actions.connected(cell.Name, false);
             };
-            ws.enter(onConnect, onData, onDisconnect);
+            wsman.create(cell.Name, access_token, onConnect, onData, onDisconnect);
             setTimeout(()=>{
-                ws.subscribe("cellctl.Rule.create", "*"); 
-                ws.subscribe("*", "*"); 
-                this.wslist[cell.Name] = ws;
+                wsman.subscribe("cellctl.Rule", "*", cell.Name); 
             }, 500);
         });
         this.props.actions.websocketInitialized();
@@ -91,10 +88,8 @@ export class Main extends React.Component<Props, {}> {
     }
 
     componentWillUnmount() {
-        Object.keys(this.wslist).forEach((cellName) => {
-            this.props.actions.connected(cellName, false);
-            this.wslist[cellName].exit();
-        });
+        const wsman = WebSocketWrapperManager.getInstance();
+        wsman.dispose();
     }
     
 
@@ -102,6 +97,7 @@ export class Main extends React.Component<Props, {}> {
         if(_.include(ViewerType, item)) {
             this.props.actions.select(item);
         }else {
+            this.props.actions.select(ViewerType.RuleViewer);
             this.props.actions.selectCell(item);
         }
     }
@@ -136,10 +132,9 @@ export class Main extends React.Component<Props, {}> {
         return (
             <div>
                 <Menu defaultActive="1" className="el-menu-demo" mode="horizontal" onSelect={this.onSelect.bind(this)}>
-                    <Menu.SubMenu index="Cell" title={this.props.mainState.cell}>
+                    <Menu.SubMenu index="1" title="Rule Viewer">
                         {cellListView}
                     </Menu.SubMenu>
-                    <Menu.Item index="1">Rule Viewer</Menu.Item>
                     <Menu.Item index="2">Event Viewer</Menu.Item>
                     <Menu.Item index="3">Rule Editor</Menu.Item>
                 </Menu>
@@ -150,3 +145,8 @@ export class Main extends React.Component<Props, {}> {
         );
     }
 }
+
+{/* <Menu.SubMenu index="Cell" title={this.props.mainState.cell}>
+{cellListView}
+</Menu.SubMenu>
+<Menu.Item index="1">Rule Viewer</Menu.Item> */}
