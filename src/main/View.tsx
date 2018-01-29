@@ -2,6 +2,7 @@ import * as React from "react";
 import { Menu, Notification } from "element-react";
 
 import * as _ from "underscore";
+import * as moment from "moment";
 
 import {MainState, ViewerType} from "./reducer";
 import {MainActionDispatcher} from "./Container";
@@ -56,15 +57,22 @@ export class Main extends React.Component<Props, {}> {
             const access_token = config.master || this.props.mainState.client.personiumToken.access_token;
             const wsman = WebSocketWrapperManager.getInstance(host);
             const onConnect = ()=>{
-                // console.log("onConnect");
+                console.log("onConnect["+cell.Name+"]: ", moment().format("YYYY-MM-DD HH:mm:ss"));
                 this.props.actions.connected(cell.Name, true);
             };
             const onData = (packet: any)=>{
                 // console.log("onData:" , packet);
-                this.props.actions.receiveEvent(cell.Name, packet);
+                try {
+                    const receivedData = JSON.parse(packet.data);
+                    if(receivedData.type !== "heart_beat") {
+                        this.props.actions.receiveEvent(cell.Name, packet);
+                    }
+                }catch(e) {
+                    console.error("Not json data: ", packet.data);
+                }
             };
             const onDisconnect = ()=>{
-                // console.log("onDisconnect");
+                console.log("onDisconnect["+cell.Name+"]: ", moment().format("YYYY-MM-DD HH:mm:ss"));
                 this.props.actions.connected(cell.Name, false);
             };
             wsman.create(cell.Name, access_token, onConnect, onData, onDisconnect);
