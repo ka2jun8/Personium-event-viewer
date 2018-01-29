@@ -58,6 +58,18 @@ export class RuleEditor extends React.Component<Props, {}> {
             return <Select.Option key={cell} label={cell} value={cell} />
         })
 
+        const actionListView = RuleActionList.map((action)=>{
+            return <Select.Option key={action} label={action} value={action} />
+        });
+
+        const typeListView = RuleTypeList.map((type)=>{
+            return <Select.Option key={type} label={type} value={type} />
+        });
+
+        const boxListView = this.props.ruleEditorState.boxList.map((box)=>{
+            return <Select.Option key={box} label={box} value={box} />
+        });
+
         return (
             <div>
                 <div style={style.header}>
@@ -69,7 +81,7 @@ export class RuleEditor extends React.Component<Props, {}> {
                             Cell: 
                         </div>
                         <div style={style.flexRow}>
-                            <Select value={this.props.ruleEditorState.cell} onChange={this.onChangeCell.bind(this)}>
+                            <Select value={this.props.ruleEditorState.cell} onChange={this.onChangeCell.bind(this)} placeholder="Cell">
                                 {cellListView}
                             </Select>
                         </div>
@@ -79,19 +91,23 @@ export class RuleEditor extends React.Component<Props, {}> {
                             ID: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.ruleEditorState.id || ""} placeholder="id/Name" onChange={this.onChangeId.bind(this)}/>
+                            <Input value={this.props.ruleEditorState.id || ""} placeholder="id/Name (No need to input for new rule)" onChange={this.onChangeId.bind(this)}/>
                         </div>
                         <div style={style.flexRow}>
                             Action: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.ruleEditorState.action || ""} placeholder="Action" onChange={this.onChangeAction.bind(this)}/>
+                            <Select value={this.props.ruleEditorState.action} onChange={this.onChangeAction.bind(this)} placeholder="Action">
+                                {actionListView}
+                            </Select>
                         </div>
                         <div style={style.flexRow}>
                             Type: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.ruleEditorState.type || ""} placeholder="Type" onChange={this.onChangeType.bind(this)}/>
+                            <Select value={this.props.ruleEditorState.type} onChange={this.onChangeType.bind(this)} placeholder="Type">
+                                {typeListView}
+                            </Select>
                         </div>
                         <div style={style.flexRow}>
                             Object: 
@@ -109,7 +125,9 @@ export class RuleEditor extends React.Component<Props, {}> {
                             Box: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.ruleEditorState.box || ""} placeholder="Box" onChange={this.onChangeBox.bind(this)}/>
+                            <Select disabled={this.props.ruleEditorState.boxList.length === 0} value={this.props.ruleEditorState.box} onChange={this.onChangeBox.bind(this)} placeholder="Box">
+                                {boxListView}
+                            </Select>
                         </div>
                         <div style={style.flexRow}>
                             <Button type="primary" onClick={this.onClick.bind(this)}>Commit</Button>
@@ -120,6 +138,7 @@ export class RuleEditor extends React.Component<Props, {}> {
         );
     }
 }
+
 const style: any = {
     header: { 
         width: 400,
@@ -131,4 +150,59 @@ const style: any = {
     flexColumn: { display: "flex", flexDirection: "column" },
     flexRow: { display: "flex", flexDirection: "row", margin: 5 },
 };
+
+const RuleActionList = [
+    "log",
+    "exec",
+    "relay",
+];
+
+const RuleTypeList = [
+    // event for odata
+    "odata",
+    "odata.create",
+    "odata.list",
+    "odata.get",
+    "odata.update",
+    "odata.patch",
+    "odata.delete",
+    "odata.links",
+    "odata.navprop",
+    // event for cellctl
+    "cellctl",
+    // event for cell
+    "cell",
+    "cell.create",
+    "cell.list",
+    "cell.get",
+    "cell.update",
+    "cell.patch",
+    "cell.delete",
+    "cell.links",
+    "cell.navprop",
+    // event for davfile
+    "davfile",
+    "davfile.create",
+    "davfile.list",
+    "davfile.get",
+    "davfile.update",
+    "davfile.patch",
+    "davfile.delete",
+    "davfile.links",
+    "davfile.navprop",
+    // event for message
+    "message",
+    "message.send",
+    "message.receive",
+    "message.unread",
+    "message.read",
+    "message.approve",
+    "message.reject",
+    // other
+    "service",
+    "boxinstall",
+    "exec",
+    "import",
+    "export",
+];
 

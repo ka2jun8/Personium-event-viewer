@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import {Dispatch} from "redux";
 import {RuleEditor} from "./View";
 import {ReduxAction, ReduxState} from "../../store";
-import { selectedCell, changeId, changeAction, changeType, changeObject, changeService, registerRule, registeredRule, changeBox } from "./action";
+import { selectedCell, changeId, changeAction, changeType, changeObject, changeService, registerRule, registeredRule, changeBox, getBoxList } from "./action";
 import { RuleEditorState } from "./reducer";
 import { reset } from "../rule-viewer/action";
 import { selectViewer } from "../action";
@@ -13,6 +13,7 @@ export class RuleEditorActionDispatcher {
     }
     changeCell(cell: string) {
         this.dispatch(selectedCell(cell));
+        this.dispatch(getBoxList(cell));
     }
     changeId(id: string) {
         this.dispatch(changeId(id));

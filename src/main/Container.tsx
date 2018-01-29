@@ -6,7 +6,7 @@ import {ViewerType} from "./reducer";
 import {login, selectViewer, selectCell, connected, receiveEvent, websocketInitialized} from "./action";
 import {reset, selectCell as selectCellForRuleViewer} from "./rule-viewer/action";
 import {selectCell as selectCellForEventViewer, receiveEvent as receiveEventForEventView} from "./event-viewer/action";
-import {selectedCell as selectCellForRuleEditor} from "./rule-editor/action";
+import {selectedCell as selectCellForRuleEditor, getBoxList as getBoxListForRuleEditor} from "./rule-editor/action";
 
 import {ReduxAction, ReduxState} from "../store";
 
@@ -28,6 +28,7 @@ export class MainActionDispatcher {
         this.dispatch(selectCellForRuleViewer(cell));
         this.dispatch(selectCellForEventViewer(cell));
         this.dispatch(selectCellForRuleEditor(cell));
+        this.dispatch(getBoxListForRuleEditor(cell));
         this.dispatch(reset(cell));
     }
 

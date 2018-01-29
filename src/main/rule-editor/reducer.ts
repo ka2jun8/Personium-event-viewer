@@ -1,6 +1,9 @@
-import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, RegisteredRuleAction, SelectedCellAction, ChangeBoxAction, ReceivedCellListAction } from "./action";
+import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, RegisteredRuleAction, SelectedCellAction, ChangeBoxAction, ReceivedCellListAction, ReceiveBoxListAction } from "./action";
 import * as _ from "underscore";
 import { PersoniumClient, Rule } from "personium-client";
+
+export const LocalCellAddress = "personium-localcell:/";
+export const LocalBoxAddress = "personium-localbox:/";
 
 export interface RuleEditorState {
     cellList: string[];
@@ -11,6 +14,7 @@ export interface RuleEditorState {
     object: string;
     service: string;
     box: string;
+    boxList: string[];
     result: boolean;
 }
 
@@ -23,7 +27,8 @@ export type RuleEditorActions =
     ChangeServiceAction |
     ChangeBoxAction |
     RegisteredRuleAction |
-    ReceivedCellListAction
+    ReceivedCellListAction |
+    ReceiveBoxListAction 
     ;
 
 const initialState: RuleEditorState = {
@@ -32,9 +37,10 @@ const initialState: RuleEditorState = {
     id: null,
     action: null,
     type: null,
-    object: null,
+    object: LocalCellAddress,
     service: null,
     box: null,
+    boxList: [],
     result: false,
 };
 
@@ -55,7 +61,8 @@ export default function reducer(state: RuleEditorState = initialState, action: R
         case ActionNames.ChangeService:
             return _.assign({}, state, {service: action.service});
         case ActionNames.ChangeBox:
-            return _.assign({}, state, {box: action.box});
+            const localAddress = action.box? LocalBoxAddress: LocalCellAddress;
+            return _.assign({}, state, {box: action.box, object: localAddress});
         case ActionNames.RegisteredRuleAction:
             return {
                 cellList: state.cellList,
@@ -63,11 +70,14 @@ export default function reducer(state: RuleEditorState = initialState, action: R
                 id: null,
                 action: null,
                 type: null,
-                object: null,
+                object: LocalCellAddress,
                 service: null,
                 box: null,
                 result: action.result,
             };
+        case ActionNames.ReceiveBoxList:
+            const boxNameList = action.boxList.map(box=>box.Name);
+            return _.assign({}, state, {boxList: boxNameList});
         default: 
             return state;
     }

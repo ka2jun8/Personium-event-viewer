@@ -4,9 +4,10 @@ import { PersoniumClient, PersoniumAccessToken, Rule } from "personium-client";
 import { ActionNames as MainActionNames, loginSuccess, receiveCells, SelecetViewAction, selectCell } from "./action";
 import { ActionNames as RuleViewrActionNames, receiveRules, loginSuccessForRuleViewer, reset, SelectCellAction, selectCell as selectCellForRuleViewer } from "./rule-viewer/action";
 import { ActionNames as EventViewerActionNames, selectCell as selectCellForEventViewer, receiveCellList } from "./event-viewer/action";
-import { ActionNames as RuleEditorActionNames, receiveCellList as receiveCellListForRuleEditor, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor } from "./rule-editor/action";
+import { ActionNames as RuleEditorActionNames, receiveCellList as receiveCellListForRuleEditor, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor, receiveBoxList as receiveBoxListForRuleEditor, getBoxList as getBoxListForRuleEditor, Box } from "./rule-editor/action";
 import { ReduxAction } from "../store";
 import { Cell } from "./View";
+import { LocalCellAddress, LocalBoxAddress } from "./rule-editor/reducer";
 
 export interface Config {
     host: string,
@@ -50,7 +51,13 @@ function* getCellList(action: ReduxAction) {
         yield put(receiveCellListForRuleEditor(cells.map(cell => cell.Name)));
         yield put(selectCellForRuleEditor(cells[0].Name));
         yield put(reset(cells[0].Name));
+        yield put(getBoxListForRuleEditor(cells[0].Name));
     }
+}
+
+function* getBoxList(action: SelectCellAction) {
+    const boxes: Box[] = yield client.getBox(action.cell, null, config.master);
+    yield put(receiveBoxListForRuleEditor(boxes));
 }
 
 function* getRules(action: SelectCellAction) {
@@ -59,11 +66,18 @@ function* getRules(action: SelectCellAction) {
 }
 
 function* registerRule(action: RegisterRuleAction) {
+    let object = null;
+    if(action.inputtedValues.object && 
+        action.inputtedValues.object !== LocalCellAddress &&
+        action.inputtedValues.object !== LocalBoxAddress) {
+            object = action.inputtedValues.object;
+    }
+
     const rule: Rule = {
         TargetUrl: action.inputtedValues.service,
         Action: action.inputtedValues.action,
         EventType: action.inputtedValues.type,
-        EventObject: action.inputtedValues.object,
+        EventObject: object,
     };
     if(action.inputtedValues.id) {
         rule.Name = action.inputtedValues.id;
@@ -82,5 +96,6 @@ export default function* rootSaga() {
     yield takeEvery(MainActionNames.Login, loginPersonium);
     yield takeEvery(RuleViewrActionNames.ResetAction, getRules);
     yield takeEvery(RuleEditorActionNames.RegisterRuleAction, registerRule);
+    yield takeEvery(RuleEditorActionNames.GetBoxList, getBoxList);
 }
 
