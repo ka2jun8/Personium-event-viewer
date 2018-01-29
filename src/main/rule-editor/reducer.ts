@@ -62,8 +62,11 @@ export default function reducer(state: RuleEditorState = initialState, action: R
         case ActionNames.ChangeService:
             return _.assign({}, state, {service: action.service});
         case ActionNames.ChangeBox:
-            const localAddress = action.box? LocalBoxAddress: LocalCellAddress;
-            return _.assign({}, state, {box: action.box, object: localAddress});
+            let object = state.object;
+            if(!object || object === LocalCellAddress || object === LocalBoxAddress) {
+                object = action.box? LocalBoxAddress: LocalCellAddress;
+            }
+            return _.assign({}, state, {box: action.box, object: object});
         case ActionNames.RegisterRuleResult:
             return _.assign({}, state, {result: action.result});
         case ActionNames.Reset:

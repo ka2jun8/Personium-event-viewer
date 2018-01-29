@@ -77,6 +77,7 @@ function* registerRule(action: RegisterRuleAction) {
     let rule: any = null;
     let result: boolean = false;
     let _id: string = null;
+    let box: string = null;
 
     if(config.oldVersion) {
         rule = {
@@ -86,17 +87,14 @@ function* registerRule(action: RegisterRuleAction) {
             Object: object,
         };
     
-        if(action.inputtedValues.box) {
-            rule["_Box.Name"] = action.inputtedValues.box;
-        }
-    
         if(action.inputtedValues.id) {
             rule.__id = action.inputtedValues.id;
         }
     
         result = false;
         _id = rule.__id;
-    
+        box = action.inputtedValues.box;
+
     }else {
         rule = {
             TargetUrl: action.inputtedValues.service,
@@ -105,22 +103,29 @@ function* registerRule(action: RegisterRuleAction) {
             EventObject: object,
         };
     
-        if(action.inputtedValues.box) {
-            rule["_Box.Name"] = action.inputtedValues.box;
-        }
-    
         if(action.inputtedValues.id) {
             rule.Name = action.inputtedValues.id;
         }
     
         result = false;
         _id = rule.Name;
+        box = action.inputtedValues.box;
     }
     
     if(!_id){
+        if(box && box !== "__") {
+            rule["_Box.Name"] = box;
+        }
         result = yield client.setRule(action.cell, rule, config.master);
     }else {
-        result = yield client.updateRule(action.cell, rule, _id, config.master);
+        if(box) {
+            if(box === "__") {
+                box = null;
+            }else {
+                rule["_Box.Name"] = box;
+            }
+        }
+        result = yield client.updateRule(action.cell, rule, _id, box, config.master);
     }
     yield put(registeredRule(result));
 }

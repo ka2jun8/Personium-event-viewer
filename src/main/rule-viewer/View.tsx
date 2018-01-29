@@ -62,7 +62,8 @@ export class RuleViewer extends React.Component<Props, {}> {
     }
 
     onClickEdit(selectedRule: Rule) {
-        this.props.actions.editRule(selectedRule, this.props.ruleState.box);
+        console.log();
+        this.props.actions.editRule(selectedRule, selectedRule["_Box.Name"]);
     }
 
     render() {

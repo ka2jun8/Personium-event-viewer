@@ -91,7 +91,7 @@ export class EventViewer extends React.Component<Props, {}> {
                             Cell: 
                         </div>
                         <div style={style.flexRow}>
-                            <Select value={this.props.eventState.cell || ALL_CELL} onChange={this.onChangeCell.bind(this)}>
+                            <Select value={this.props.eventState.cell || ALL_CELL} onChange={this.onChangeCell.bind(this)} placeholder="Cell">
                                 {cellListView}
                             </Select>
                         </div>
