@@ -153,14 +153,14 @@ const style: any = {
     flexRow: { display: "flex", flexDirection: "row", margin: 5 },
 };
 
-const RuleActionList = [
+export const RuleActionList = [
     "log",
     "exec",
     "relay",
     "callback",
 ];
 
-const RuleTypeList = [
+export const RuleTypeList = [
     // event for odata
     "odata",
     "odata.create",
@@ -169,30 +169,30 @@ const RuleTypeList = [
     "odata.update",
     "odata.patch",
     "odata.delete",
-    "odata.links",
-    "odata.navprop",
     // event for cellctl
     "cellctl",
-    // event for cell
-    "cell",
-    "cell.create",
-    "cell.list",
-    "cell.get",
-    "cell.update",
-    "cell.patch",
-    "cell.delete",
-    "cell.links",
-    "cell.navprop",
+    "cellctl.Rule", 
+    "cellctl.Role", 
+    "cellctl.ExtRole", 
+    "cellctl.Relation", 
+    "cellctl.Box", 
+    "cellctl.ExtCell", 
+    "cellctl.Account", 
+    "cellctl.SentMessage", 
+    "cellctl.ReceivedMessage", 
     // event for davfile
     "davfile",
-    "davfile.create",
-    "davfile.list",
     "davfile.get",
     "davfile.update",
-    "davfile.patch",
     "davfile.delete",
-    "davfile.links",
-    "davfile.navprop",
+    // event for links
+    "Box.links.Rule.create",
+    "Box.links.Role.create",
+    "Box.links.Relation.create",
+    // event for navprop
+    "Box.navprop.Rule.create",
+    "Box.navprop.Role.create",
+    "Box.navprop.Relation.create",
     // event for message
     "message",
     "message.send",
@@ -202,9 +202,8 @@ const RuleTypeList = [
     "message.approve",
     "message.reject",
     // other
-    "service",
+    "service.exec",
     "boxinstall",
-    "exec",
     "import",
     "export",
 ];

@@ -5,6 +5,7 @@ import { PersoniumAccessToken } from "personium-client";
 import { EventViewerState, } from "./reducer";
 import { EventViewerActionDispatcher } from "./Container";
 import { JSONEvent } from "../View";
+import { RuleTypeList } from "../rule-editor/View";
 
 interface Props {
     eventState: EventViewerState,
@@ -74,6 +75,11 @@ export class EventViewer extends React.Component<Props, {}> {
             return <Select.Option key={cell} label={cell} value={cell} />
         })
 
+        const subscribeTypes = _.union(["*"], RuleTypeList);
+        const typeListView = subscribeTypes.map((type)=>{
+            return <Select.Option key={type} label={type} value={type} />
+        });
+
         return (
             <div>
                 <div style={style.header}>
@@ -95,7 +101,9 @@ export class EventViewer extends React.Component<Props, {}> {
                             Subscribe Type: 
                         </div>
                         <div style={style.flexRow}>
-                            <Input value={this.props.eventState.subscribeType || ""} placeholder="Type" onChange={this.onChangeType.bind(this)}/>
+                            <Select value={this.props.eventState.subscribeType} onChange={this.onChangeType.bind(this)} placeholder="Type">
+                                {typeListView}
+                            </Select>
                         </div>
                     </div>
                     <div>
