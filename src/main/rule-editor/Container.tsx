@@ -2,9 +2,9 @@ import {connect} from "react-redux";
 import {Dispatch} from "redux";
 import {RuleEditor} from "./View";
 import {ReduxAction, ReduxState} from "../../store";
-import { selectedCell, changeId, changeAction, changeType, changeObject, changeService, registerRule, registeredRule, changeBox, getBoxList } from "./action";
+import { selectedCell, changeId, changeAction, changeType, changeObject, changeService, registerRule, reset, changeBox, getBoxList, registeredRule} from "./action";
+import { reset as resetForRuleViewer } from "../rule-viewer/action";
 import { RuleEditorState } from "./reducer";
-import { reset } from "../rule-viewer/action";
 import { selectViewer } from "../action";
 import { ViewerType } from "../reducer";
 
@@ -40,9 +40,9 @@ export class RuleEditorActionDispatcher {
         this.dispatch(registeredRule(sentFlag));
     }
     reset(cell: string) {
-        this.dispatch(registeredRule(false));
-        this.dispatch(selectViewer(ViewerType.RuleViewer));
-        this.dispatch(reset(cell));
+        this.dispatch(reset());
+        // this.dispatch(selectViewer(ViewerType.RuleViewer));
+        this.dispatch(resetForRuleViewer(cell));
     }
 }
 

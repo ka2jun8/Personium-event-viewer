@@ -21,11 +21,11 @@ export class RuleViewerActionDispatcher {
 
     editRule(rule: Rule, box: string) {
         this.dispatch(selectViewer(ViewerType.RuleEditor));
-        this.dispatch(changeId(rule.Name));
+        this.dispatch(changeId(rule.Name || (rule as any).__id));
         this.dispatch(changeAction(rule.Action));
-        this.dispatch(changeType(rule.EventType));
-        this.dispatch(changeObject(rule.EventObject));
-        this.dispatch(changeService(rule.TargetUrl));
+        this.dispatch(changeType(rule.EventType || (rule as any).Type));
+        this.dispatch(changeObject(rule.EventObject || (rule as any).Object));
+        this.dispatch(changeService(rule.TargetUrl || (rule as any).Service));
         this.dispatch(changeBox(box));
     }
 }

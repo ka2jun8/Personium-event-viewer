@@ -70,6 +70,8 @@ export class RuleEditor extends React.Component<Props, {}> {
             return <Select.Option key={box} label={box} value={box} />
         });
 
+        const commit = this.props.ruleEditorState.id ? "Update" : "Create";
+
         return (
             <div>
                 <div style={style.header}>
@@ -130,7 +132,7 @@ export class RuleEditor extends React.Component<Props, {}> {
                             </Select>
                         </div>
                         <div style={style.flexRow}>
-                            <Button type="primary" onClick={this.onClick.bind(this)}>Commit</Button>
+                            <Button type="primary" onClick={this.onClick.bind(this)}>{commit}</Button>
                         </div>
                     </div>
                 </div>
@@ -155,6 +157,7 @@ const RuleActionList = [
     "log",
     "exec",
     "relay",
+    "callback",
 ];
 
 const RuleTypeList = [

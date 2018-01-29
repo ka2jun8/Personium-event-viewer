@@ -2,7 +2,7 @@ import { put, takeEvery } from "redux-saga/effects";
 
 import { PersoniumClient, PersoniumAccessToken, Rule } from "personium-client";
 import { ActionNames as MainActionNames, loginSuccess, receiveCells, SelecetViewAction, selectCell } from "./action";
-import { ActionNames as RuleViewrActionNames, receiveRules, loginSuccessForRuleViewer, reset, SelectCellAction, selectCell as selectCellForRuleViewer } from "./rule-viewer/action";
+import { ActionNames as RuleViewrActionNames, receiveRules, loginSuccessForRuleViewer, SelectCellAction, selectCell as selectCellForRuleViewer, reset } from "./rule-viewer/action";
 import { ActionNames as EventViewerActionNames, selectCell as selectCellForEventViewer, receiveCellList } from "./event-viewer/action";
 import { ActionNames as RuleEditorActionNames, receiveCellList as receiveCellListForRuleEditor, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor, receiveBoxList as receiveBoxListForRuleEditor, getBoxList as getBoxListForRuleEditor, Box } from "./rule-editor/action";
 import { ReduxAction } from "../store";
@@ -16,6 +16,7 @@ export interface Config {
     password: string,
     master: string;
     event: boolean;
+    oldVersion: boolean;
 }
 
 declare const config: Config;
@@ -73,17 +74,49 @@ function* registerRule(action: RegisterRuleAction) {
             object = action.inputtedValues.object;
     }
 
-    const rule: Rule = {
-        TargetUrl: action.inputtedValues.service,
-        Action: action.inputtedValues.action,
-        EventType: action.inputtedValues.type,
-        EventObject: object,
-    };
-    if(action.inputtedValues.id) {
-        rule.Name = action.inputtedValues.id;
-    }
+    let rule: any = null;
     let result: boolean = false;
-    const _id: string = rule.Name;
+    let _id: string = null;
+
+    if(config.oldVersion) {
+        rule = {
+            Service: action.inputtedValues.service,
+            Action: action.inputtedValues.action,
+            Type: action.inputtedValues.type,
+            Object: object,
+        };
+    
+        if(action.inputtedValues.box) {
+            rule["_Box.Name"] = action.inputtedValues.box;
+        }
+    
+        if(action.inputtedValues.id) {
+            rule.__id = action.inputtedValues.id;
+        }
+    
+        result = false;
+        _id = rule.__id;
+    
+    }else {
+        rule = {
+            TargetUrl: action.inputtedValues.service,
+            Action: action.inputtedValues.action,
+            EventType: action.inputtedValues.type,
+            EventObject: object,
+        };
+    
+        if(action.inputtedValues.box) {
+            rule["_Box.Name"] = action.inputtedValues.box;
+        }
+    
+        if(action.inputtedValues.id) {
+            rule.Name = action.inputtedValues.id;
+        }
+    
+        result = false;
+        _id = rule.Name;
+    }
+    
     if(!_id){
         result = yield client.setRule(action.cell, rule, config.master);
     }else {
@@ -95,7 +128,7 @@ function* registerRule(action: RegisterRuleAction) {
 export default function* rootSaga() {
     yield takeEvery(MainActionNames.Login, loginPersonium);
     yield takeEvery(RuleViewrActionNames.ResetAction, getRules);
-    yield takeEvery(RuleEditorActionNames.RegisterRuleAction, registerRule);
+    yield takeEvery(RuleEditorActionNames.RegisterRule, registerRule);
     yield takeEvery(RuleEditorActionNames.GetBoxList, getBoxList);
 }
 

@@ -1,4 +1,5 @@
-import {ReceiveRulesAction, SelectRuleAction, LoginSuccessAction, ActionNames, ResetAction, SelectCellAction} from "./action";
+import {ReceiveRulesAction, SelectRuleAction, LoginSuccessAction, ActionNames, SelectCellAction} from "./action";
+import * as _ from "underscore";
 import { PersoniumClient, Rule } from "personium-client";
 
 interface CollectionRuleListMap {
@@ -19,7 +20,7 @@ export interface RuleViewerState {
     box: string,
 }
 
-export type RuleViewerActions = ReceiveRulesAction | SelectRuleAction | LoginSuccessAction | ResetAction | SelectCellAction;
+export type RuleViewerActions = ReceiveRulesAction | SelectRuleAction | LoginSuccessAction | SelectCellAction;
 
 const initialState: RuleViewerState = {
     client: null,
@@ -70,45 +71,13 @@ export default function reducer(state: RuleViewerState = initialState, action: R
             });
             const boxNameList: string[] = Object.keys(boxRuleListMap); 
 
-            return {
-                cell: state.cell,
-                client: state.client, 
-                rules: action.rules,
-                boxRuleListMap, 
-                boxNameList, 
-                selectedRule: action.rules[0],
-                box: state.box,
-            };
+            return _.assign({}, state, {boxRuleListMap: boxRuleListMap, boxNameList: boxNameList, rules: action.rules, selectedRule: action.rules[0]});
         case ActionNames.SelectRuleAction: 
-            return {
-                cell: state.cell,
-                client: state.client,
-                rules: state.rules, 
-                boxRuleListMap: state.boxRuleListMap, 
-                boxNameList: state.boxNameList,
-                selectedRule: action.rule,
-                box: action.box,
-            };
+            return _.assign({}, state, {selectedRule: action.rule, box: action.box});
         case ActionNames.LoginSuccessAction: 
-            return {
-                cell: state.cell,
-                client: action.client,
-                rules: state.rules, 
-                boxRuleListMap: state.boxRuleListMap, 
-                boxNameList: state.boxNameList,
-                selectedRule: state.selectedRule,
-                box: state.box,
-            };
+            return _.assign({}, state, {client: action.client});
         case ActionNames.SelectCell: 
-            return {
-                cell: action.cell,
-                client: state.client,
-                rules: state.rules, 
-                boxRuleListMap: state.boxRuleListMap, 
-                boxNameList: state.boxNameList,
-                selectedRule: state.selectedRule,
-                box: state.box,
-            }
+            return _.assign({}, state, {cell: action.cell});
         default: 
             return state;
     }

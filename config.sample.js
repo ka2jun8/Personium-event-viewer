@@ -5,4 +5,5 @@ const config = {
     // password: "password",
     master: "master-token",
     event: false,
+    oldVersion: false,
 };

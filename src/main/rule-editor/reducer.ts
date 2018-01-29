@@ -1,4 +1,4 @@
-import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, RegisteredRuleAction, SelectedCellAction, ChangeBoxAction, ReceivedCellListAction, ReceiveBoxListAction } from "./action";
+import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, ResetAction, SelectedCellAction, ChangeBoxAction, ReceivedCellListAction, ReceiveBoxListAction, RegisterRuleResultAction } from "./action";
 import * as _ from "underscore";
 import { PersoniumClient, Rule } from "personium-client";
 
@@ -26,7 +26,8 @@ export type RuleEditorActions =
     ChangeObjectAction |
     ChangeServiceAction |
     ChangeBoxAction |
-    RegisteredRuleAction |
+    RegisterRuleResultAction |
+    ResetAction |
     ReceivedCellListAction |
     ReceiveBoxListAction 
     ;
@@ -63,7 +64,9 @@ export default function reducer(state: RuleEditorState = initialState, action: R
         case ActionNames.ChangeBox:
             const localAddress = action.box? LocalBoxAddress: LocalCellAddress;
             return _.assign({}, state, {box: action.box, object: localAddress});
-        case ActionNames.RegisteredRuleAction:
+        case ActionNames.RegisterRuleResult:
+            return _.assign({}, state, {result: action.result});
+        case ActionNames.Reset:
             return {
                 cellList: state.cellList,
                 cell: state.cell,
@@ -73,7 +76,8 @@ export default function reducer(state: RuleEditorState = initialState, action: R
                 object: LocalCellAddress,
                 service: null,
                 box: null,
-                result: action.result,
+                boxList: state.boxList,
+                result: false,
             };
         case ActionNames.ReceiveBoxList:
             const boxNameList = action.boxList.map(box=>box.Name);

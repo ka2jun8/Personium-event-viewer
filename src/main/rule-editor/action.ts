@@ -13,11 +13,12 @@ export enum ActionNames {
     ChangeObject = "rule-editor/change-object",
     ChangeService = "rule-editor/change-service",
     ChangeBox = "rule-editor/change-box",
-    RegisterRuleAction = "rule-editor/register-rule",
-    RegisteredRuleAction = "rule-editor/registered-rule",
+    RegisterRule = "rule-editor/register-rule",
     SelectedCellAction = "rule-editor/selected-cell",
     GetBoxList = "rule-editor/get-box-list",
     ReceiveBoxList = "rule-editor/receive-box-list",
+    RegisterRuleResult = "rule-editor/register-rule-result",
+    Reset = "rule-editor/reset",
 }
 
 export interface ReceivedCellListAction extends Action {
@@ -61,7 +62,7 @@ export interface ChangeBoxAction extends Action {
 }
 
 export interface RegisterRuleAction extends Action {
-    type: ActionNames.RegisterRuleAction,
+    type: ActionNames.RegisterRule,
     cell: string,
     inputtedValues: RuleEditorState,
 }
@@ -76,9 +77,12 @@ export interface ReceiveBoxListAction extends Action {
     boxList: Box[],
 }
 
+export interface ResetAction extends Action {
+    type: ActionNames.Reset,
+}
 
-export interface RegisteredRuleAction extends Action {
-    type: ActionNames.RegisteredRuleAction,
+export interface RegisterRuleResultAction extends Action {
+    type: ActionNames.RegisterRuleResult,
     result: boolean,
 }
 
@@ -124,14 +128,18 @@ export const changeBox = (box: string): ChangeBoxAction => ({
 });
 
 export const registerRule = (cell: string, inputtedValues: RuleEditorState): RegisterRuleAction => ({
-    type: ActionNames.RegisterRuleAction,
+    type: ActionNames.RegisterRule,
     cell: cell, 
     inputtedValues: inputtedValues,
 });
 
-export const registeredRule = (result: boolean): RegisteredRuleAction => ({
-    type: ActionNames.RegisteredRuleAction,
+export const registeredRule = (result: boolean): RegisterRuleResultAction => ({
+    type: ActionNames.RegisterRuleResult,
     result: result,
+});
+
+export const reset = (): ResetAction => ({
+    type: ActionNames.Reset,
 });
 
 export const getBoxList = (cell: string): GetBoxListAction => ({
