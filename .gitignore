@@ -92,7 +92,7 @@ typings/
 
 dist
 
-congig.js
+config.js
 config.1.js
 config.2.js
 config.local.js
