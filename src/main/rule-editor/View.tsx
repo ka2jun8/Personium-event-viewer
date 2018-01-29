@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Input, Button, Message } from "element-react";
+import { Input, Button, Message, Select } from "element-react";
 import * as _ from "underscore";
 import { RuleEditorState } from "./reducer";
 import { RuleEditorActionDispatcher } from "./Container";
@@ -10,6 +10,10 @@ interface Props {
 }
 
 export class RuleEditor extends React.Component<Props, {}> {
+    onChangeCell(value: string) {
+        this.props.actions.changeCell(value);
+    }
+
     onChangeId(value: string) {
         this.props.actions.changeId(value);
     }
@@ -49,12 +53,27 @@ export class RuleEditor extends React.Component<Props, {}> {
             }, 0);
         }
 
+        const cellList: string[] = _.union([], this.props.ruleEditorState.cellList);
+        const cellListView = cellList.map(cell => {
+            return <Select.Option key={cell} label={cell} value={cell} />
+        })
+
         return (
             <div>
                 <div style={style.header}>
                         Rule Edit
                 </div>
                 <div style={style.width}>
+                    <div style={style.flexColumn}>
+                        <div style={style.flexRow}>
+                            Cell: 
+                        </div>
+                        <div style={style.flexRow}>
+                            <Select value={this.props.ruleEditorState.cell} onChange={this.onChangeCell.bind(this)}>
+                                {cellListView}
+                            </Select>
+                        </div>
+                    </div>
                     <div style={style.flexColumn}>
                         <div style={style.flexRow}>
                             ID: 

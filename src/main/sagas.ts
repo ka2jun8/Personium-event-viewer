@@ -4,7 +4,7 @@ import { PersoniumClient, PersoniumAccessToken, Rule } from "personium-client";
 import { ActionNames as MainActionNames, loginSuccess, receiveCells, SelecetViewAction, selectCell } from "./action";
 import { ActionNames as RuleViewrActionNames, receiveRules, loginSuccessForRuleViewer, reset, SelectCellAction, selectCell as selectCellForRuleViewer } from "./rule-viewer/action";
 import { ActionNames as EventViewerActionNames, selectCell as selectCellForEventViewer, receiveCellList } from "./event-viewer/action";
-import { ActionNames as RuleEditorActionNames, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor } from "./rule-editor/action";
+import { ActionNames as RuleEditorActionNames, receiveCellList as receiveCellListForRuleEditor, registeredRule, RegisterRuleAction, selectedCell as selectCellForRuleEditor } from "./rule-editor/action";
 import { ReduxAction } from "../store";
 import { Cell } from "./View";
 
@@ -47,6 +47,7 @@ function* getCellList(action: ReduxAction) {
         yield put(selectCellForRuleViewer(cells[0].Name));
         yield put(selectCellForEventViewer(cells[0].Name));
         yield put(receiveCellList(cells.map(cell => cell.Name)));
+        yield put(receiveCellListForRuleEditor(cells.map(cell => cell.Name)));
         yield put(selectCellForRuleEditor(cells[0].Name));
         yield put(reset(cells[0].Name));
     }

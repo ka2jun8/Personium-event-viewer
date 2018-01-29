@@ -11,9 +11,9 @@ import { ViewerType } from "../reducer";
 export class RuleEditorActionDispatcher {
     constructor(private dispatch: (action: ReduxAction) => void) {
     }
-    // selectedCell(cell: string) {
-    //     this.dispatch(selectedCell(cell));
-    // }
+    changeCell(cell: string) {
+        this.dispatch(selectedCell(cell));
+    }
     changeId(id: string) {
         this.dispatch(changeId(id));
     }

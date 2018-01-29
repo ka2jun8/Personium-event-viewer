@@ -2,6 +2,7 @@ import {Action} from "redux";
 import { RuleEditorState } from "./reducer";
 
 export enum ActionNames {
+    ReceivedCellList = "rule-editor/cell-list",
     ChangeId = "rule-editor/change-id",
     ChangeAction = "rule-editor/change-action",
     ChangeType = "rule-editor/change-type",
@@ -11,6 +12,11 @@ export enum ActionNames {
     RegisterRuleAction = "rule-editor/register-rule",
     RegisteredRuleAction = "rule-editor/registered-rule",
     SelectedCellAction = "rule-editor/selected-cell",
+}
+
+export interface ReceivedCellListAction extends Action {
+    type: ActionNames.ReceivedCellList,
+    cellList: string[],
 }
 
 export interface SelectedCellAction extends Action {
@@ -59,6 +65,11 @@ export interface RegisteredRuleAction extends Action {
     result: boolean,
 }
 
+
+export const receiveCellList = (cellList: string[]): ReceivedCellListAction => ({
+    type: ActionNames.ReceivedCellList,
+    cellList: cellList,
+});
 
 export const selectedCell = (cell: string): SelectedCellAction => ({
     type: ActionNames.SelectedCellAction,

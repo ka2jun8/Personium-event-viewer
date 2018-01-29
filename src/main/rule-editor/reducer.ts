@@ -1,7 +1,9 @@
-import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, RegisteredRuleAction, SelectedCellAction, ChangeBoxAction } from "./action";
+import { ActionNames, ChangeIdAction, ChangeActionAction, ChangeObjectAction, ChangeTypeAction, ChangeServiceAction, RegisteredRuleAction, SelectedCellAction, ChangeBoxAction, ReceivedCellListAction } from "./action";
+import * as _ from "underscore";
 import { PersoniumClient, Rule } from "personium-client";
 
 export interface RuleEditorState {
+    cellList: string[];
     cell: string;
     id: string;
     action: string;
@@ -20,10 +22,12 @@ export type RuleEditorActions =
     ChangeObjectAction |
     ChangeServiceAction |
     ChangeBoxAction |
-    RegisteredRuleAction 
+    RegisteredRuleAction |
+    ReceivedCellListAction
     ;
 
 const initialState: RuleEditorState = {
+    cellList: [],
     cell: null,
     id: null,
     action: null,
@@ -36,85 +40,25 @@ const initialState: RuleEditorState = {
 
 export default function reducer(state: RuleEditorState = initialState, action: RuleEditorActions) {
     switch(action.type) {
+        case ActionNames.ReceivedCellList:  
+            return _.assign({}, state, {cellList: action.cellList});
         case ActionNames.SelectedCellAction:
-            return {
-                cell: action.cell,
-                id: state.id,
-                action: state.action,
-                type: state.type,
-                object: state.object,
-                service: state.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {cell: action.cell});
         case ActionNames.ChangeId:
-            return {
-                cell: state.cell,
-                id: action.id,
-                action: state.action,
-                type: state.type,
-                object: state.object,
-                service: state.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {id: action.id});
         case ActionNames.ChangeType:
-            return {
-                cell: state.cell,
-                id: state.id,
-                action: state.action,
-                type: action.eventType,
-                object: state.object,
-                service: state.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {type: action.eventType});
         case ActionNames.ChangeAction:
-            return {
-                cell: state.cell,
-                id: state.id,
-                action: action.action,
-                type: state.type,
-                object: state.object,
-                service: state.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {action: action.action});
         case ActionNames.ChangeObject:
-            return {
-                cell: state.cell,
-                id: state.id,
-                action: state.action,
-                type: state.type,
-                object: action.object,
-                service: state.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {object: action.object});
         case ActionNames.ChangeService:
-            return {
-                cell: state.cell,
-                id: state.id,
-                action: state.action,
-                type: state.type,
-                object: state.object,
-                service: action.service,
-                box: state.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {service: action.service});
         case ActionNames.ChangeBox:
-            return {
-                cell: state.cell,
-                id: state.id,
-                action: state.action,
-                type: state.type,
-                object: state.object,
-                service: state.service,
-                box: action.box,
-                result: state.result,
-            };
+            return _.assign({}, state, {box: action.box});
         case ActionNames.RegisteredRuleAction:
             return {
+                cellList: state.cellList,
                 cell: state.cell,
                 id: null,
                 action: null,
