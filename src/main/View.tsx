@@ -62,23 +62,13 @@ export class Main extends React.Component<Props, {}> {
             };
             const onData = (packet: any)=>{
                 // console.log("onData:" , packet);
-                try {
-                    const receivedData = JSON.parse(packet.data);
-                    if(receivedData.type !== "heart_beat") {
-                        this.props.actions.receiveEvent(cell.Name, packet);
-                    }
-                }catch(e) {
-                    console.error("Not json data: ", packet.data);
-                }
+                this.props.actions.receiveEvent(cell.Name, packet);
             };
             const onDisconnect = ()=>{
                 console.log("onDisconnect["+cell.Name+"]: ", moment().format("YYYY-MM-DD HH:mm:ss"));
                 this.props.actions.connected(cell.Name, false);
             };
             wsman.create(cell.Name, access_token, onConnect, onData, onDisconnect);
-            // setTimeout(()=>{
-            //     wsman.subscribe("cellctl.Rule", "*", cell.Name); 
-            // }, 500);
         });
         this.props.actions.websocketInitialized();
     }
