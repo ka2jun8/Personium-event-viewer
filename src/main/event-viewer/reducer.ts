@@ -83,8 +83,13 @@ export default function reducer(state: EventViewerState = initialState, action: 
         case ActionNames.ReceivedState:  
             const currentState = state.receivedState;
             const receivedState = action.receivedState;
-            const nextState = _.assign({}, currentState[action.cell], receivedState);
-            currentState[action.cell] = nextState;
+            if(receivedState && receivedState.response === "success") {
+                const nextState = _.assign({}, currentState[action.cell], receivedState);
+                currentState[action.cell] = nextState;
+                currentState[action.cell].authorized = true;
+            }else {
+                currentState[action.cell].authorized = false;
+            }
             return _.assign({}, state, {receivedState: currentState});
         default: 
             return state;
