@@ -13,6 +13,8 @@ export enum ActionNames {
     ReceiveEvent = "main/receive-event",
     Connected = "main/connected",
     WebSocketInitialized = "main/websocket-initilized",
+    CheckState = "main/check-state",
+    CheckedState = "main/checked-state",
 }
 
 export interface LoginAction extends Action {
@@ -55,6 +57,14 @@ export interface WebSocketInitializedAction extends Action {
     type: ActionNames.WebSocketInitialized,
 }
 
+export interface CheckStateAction extends Action {
+    type: ActionNames.CheckState,
+}
+
+export interface CheckedStateAction extends Action {
+    type: ActionNames.CheckedState,
+}
+
 
 export const selectViewer = (viewer: ViewerType): SelecetViewAction => ({
     type: ActionNames.SelectViewer,
@@ -95,3 +105,13 @@ export const connected = (cell: string, state: boolean): ConnectedAction => ({
 export const websocketInitialized = (): WebSocketInitializedAction => ({
     type: ActionNames.WebSocketInitialized,
 });
+
+export const checkState = (): CheckStateAction => ({
+    type: ActionNames.CheckState,
+});
+
+export const checkedState = (): CheckedStateAction => ({
+    type: ActionNames.CheckedState,
+});
+
+

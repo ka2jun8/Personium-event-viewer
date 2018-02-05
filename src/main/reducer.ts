@@ -1,5 +1,6 @@
+import * as _ from "underscore";
 import {PersoniumClient, Rule, Cell} from "personium-client";
-import { ActionNames, SelecetViewAction, LoginSuccessAction, ReceiveCellsAction, SelectCellAction, ReceiveEventAction, ConnectedAction, WebSocketInitializedAction } from "./action";
+import { ActionNames, SelecetViewAction, LoginSuccessAction, ReceiveCellsAction, SelectCellAction, ReceiveEventAction, ConnectedAction, WebSocketInitializedAction, CheckStateAction, CheckedStateAction } from "./action";
 import { JSONEvent } from "./View";
 
 export enum ViewerType {
@@ -16,9 +17,20 @@ export interface MainState {
     notifyMessage: string,
     connectionState: boolean;
     websocketInitialized: boolean;
+    stateChecking: boolean;
 }
 
-export type MainActions = LoginSuccessAction | SelecetViewAction | ReceiveCellsAction | SelectCellAction | ReceiveEventAction | ConnectedAction | WebSocketInitializedAction;
+export type MainActions =
+     LoginSuccessAction | 
+     SelecetViewAction | 
+     ReceiveCellsAction | 
+     SelectCellAction | 
+     ReceiveEventAction | 
+     ConnectedAction | 
+     WebSocketInitializedAction |
+     CheckStateAction |
+     CheckedStateAction
+     ;
 
 const initialState: MainState = {
     client: null,
@@ -28,6 +40,7 @@ const initialState: MainState = {
     notifyMessage: null,
     connectionState: false,
     websocketInitialized: false,
+    stateChecking: false,
 };
 
 export default function reducer(state: MainState = initialState, action: MainActions) {
@@ -98,6 +111,10 @@ export default function reducer(state: MainState = initialState, action: MainAct
                 websocketInitialized: state.websocketInitialized,
                 notifyMessage: notifyMessage, 
             };
+        case ActionNames.CheckState:
+            return _.assign({}, state, {stateChecking: true});
+        case ActionNames.CheckedState:
+            return _.assign({}, state, {stateChecking: false});
         default: 
             return state;
     }

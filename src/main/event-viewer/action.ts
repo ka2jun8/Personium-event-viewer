@@ -1,5 +1,5 @@
 import {Action} from "redux";
-import { Packet } from "../View";
+import { Packet, WebSocketState } from "../View";
 import { SubscribeCondition } from "./Container";
 
 export enum ActionNames {
@@ -10,6 +10,7 @@ export enum ActionNames {
     Subscribe = "event-viewer/subscribe",
     Unsubscribe = "event-viewer/unsubscribe",
     ReceivedCellList = "event-viewer/received-cell-list",
+    ReceivedState = "event-viewer/received-state",
 }
 
 export interface ReceiveEventAction extends Action {
@@ -48,6 +49,12 @@ export interface ReceivedCellListAction extends Action {
     cellList: string[],
 }
 
+export interface ReceivedStateAction extends Action {
+    type: ActionNames.ReceivedState,
+    cell: string,
+    receivedState: WebSocketState,
+}
+
 
 export const receiveEvent = (cell: string, packet: Packet): ReceiveEventAction => ({
     type: ActionNames.ReceiveEvent,
@@ -84,3 +91,10 @@ export const receiveCellList = (cellList: string[]): ReceivedCellListAction => (
     type: ActionNames.ReceivedCellList,
     cellList: cellList,
 });
+
+export const receivedState = (cell: string, receivedState: WebSocketState): ReceivedStateAction => ({
+    type: ActionNames.ReceivedState,
+    cell: cell,
+    receivedState: receivedState,
+});
+

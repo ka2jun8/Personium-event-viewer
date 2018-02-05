@@ -12,6 +12,7 @@ import EventViewer from "./event-viewer/Container";
 import RuleEditor from "./rule-editor/Container";
 import { WebSocketWrapperManager } from "./WebSocketWrapper";
 import {Config} from "./sagas";
+import { toJSON } from "./util";
 
 declare const config: Config;
 
@@ -26,6 +27,14 @@ export interface Cell {
 
 export interface Packet {
     data: any,
+}
+
+export interface WebSocketState {
+    response: string;
+    cell?: string;
+    authorized?: boolean;
+    expire_time?: string;
+    subscribes?: {type: string, object: string}[];
 }
 
 export interface JSONEvent {
@@ -61,8 +70,17 @@ export class Main extends React.Component<Props, {}> {
                 this.props.actions.connected(cell.Name, true);
             };
             const onData = (packet: any)=>{
-                // console.log("onData:" , packet);
-                this.props.actions.receiveEvent(cell.Name, packet);
+                const dataJson = toJSON(packet);
+                // console.log("onData: dataJson:" , dataJson);
+                if(dataJson){
+                    if(dataJson.RequestKey) {
+                        // event
+                        this.props.actions.receiveEvent(cell.Name, packet);
+                    }else {
+                        // state
+                        this.props.actions.receiveState(cell.Name, dataJson);
+                    }
+                }
             };
             const onDisconnect = ()=>{
                 console.log("onDisconnect["+cell.Name+"]: ", moment().format("YYYY-MM-DD HH:mm:ss"));
@@ -82,6 +100,14 @@ export class Main extends React.Component<Props, {}> {
                     setTimeout(this.initializeWebSocket.bind(this), 0);
                 }
             }, 500);
+        }
+    }
+
+    componentDidUpdate() {
+        if(this.props.mainState.stateChecking) {
+            const wsman = WebSocketWrapperManager.getInstance();
+            wsman.checkState();
+            this.props.actions.checkedState();
         }
     }
 

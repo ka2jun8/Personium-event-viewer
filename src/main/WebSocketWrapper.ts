@@ -64,6 +64,20 @@ export class WebSocketWrapperManager {
             });
         }
     }
+
+    checkState(cell?: string) {
+        if(cell && this.wslist[cell]){
+            this.wslist[cell].checkState();
+        }else {
+            Object.keys(this.wslist).forEach((cellName) => {
+                if(this.wslist[cellName]) {
+                    this.wslist[cellName].checkState();
+                }
+            });
+        }
+    }
+    
+    
 }
 
 
@@ -71,12 +85,14 @@ class WebSocketWrapper {
     host: string = null;
     token: string = null;
     ws: WebSocket = null;
+    cell: string = null;
 
     constructor(host: string, token: string) {
         this.host = host;
         this.token = token;
     }
     enter(cell: string, onConnect: () => void, onData: (message: any) => void, onDisconnect: () => void) {
+        this.cell = cell;
         const endpoint = "wss://"+this.host+"/"+cell+"/__event";
         // console.log("connect WebSocket: ", endpoint );
         this.ws = new WebSocket(endpoint);
@@ -94,6 +110,11 @@ class WebSocketWrapper {
         this.ws.onclose = () => {
             onDisconnect();
         }
+    }
+
+    checkState() {
+        const state = {state: "all"};
+        this.ws.send(JSON.stringify(state));
     }
 
     subscribe(type: string, path: string) {

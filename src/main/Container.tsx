@@ -1,11 +1,11 @@
 import {connect} from "react-redux";
 import {Dispatch} from "redux";
 
-import {Main, Packet} from "./View";
+import {Main, Packet, WebSocketState} from "./View";
 import {ViewerType} from "./reducer";
-import {login, selectViewer, selectCell, connected, receiveEvent, websocketInitialized} from "./action";
+import {login, selectViewer, selectCell, connected, receiveEvent, websocketInitialized, checkedState} from "./action";
 import {reset, selectCell as selectCellForRuleViewer} from "./rule-viewer/action";
-import {selectCell as selectCellForEventViewer, receiveEvent as receiveEventForEventView} from "./event-viewer/action";
+import {selectCell as selectCellForEventViewer, receiveEvent as receiveEventForEventView, receivedState} from "./event-viewer/action";
 import {selectedCell as selectCellForRuleEditor, getBoxList as getBoxListForRuleEditor} from "./rule-editor/action";
 
 import {ReduxAction, ReduxState} from "../store";
@@ -45,6 +45,14 @@ export class MainActionDispatcher {
         this.dispatch(websocketInitialized());
     }
     
+    checkedState() {
+        this.dispatch(checkedState());
+    }
+
+    receiveState(cell: string, state: WebSocketState) {
+        this.dispatch(receivedState(cell, state));
+    }
+
 }
 
 export default connect(

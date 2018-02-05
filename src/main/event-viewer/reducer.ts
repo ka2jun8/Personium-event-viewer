@@ -1,6 +1,6 @@
 import * as moment from "moment";
-import { ActionNames, ReceiveEventAction, SelectCellAction, ChangeSubscribeTypeAction, ChangeSubscribeObjectAction, SubscribeAction, UnsubscribeAction, ReceivedCellListAction } from "./action";
-import { JSONEvent } from "../View";
+import { ActionNames, ReceiveEventAction, SelectCellAction, ChangeSubscribeTypeAction, ChangeSubscribeObjectAction, SubscribeAction, UnsubscribeAction, ReceivedCellListAction, ReceivedStateAction } from "./action";
+import { JSONEvent, WebSocketState } from "../View";
 import * as _ from "underscore";
 import { WebSocketWrapperManager } from "../WebSocketWrapper";
 import { ALL_CELL } from "./View";
@@ -12,6 +12,7 @@ export interface EventViewerState {
     subscribeType: string,
     subscribeObject: string,
     cellList: string[],
+    receivedState: {[cell: string]: WebSocketState},
 }
 
 export type EventViewerActions = 
@@ -21,7 +22,8 @@ export type EventViewerActions =
     ChangeSubscribeObjectAction |
     SubscribeAction |
     UnsubscribeAction |
-    ReceivedCellListAction
+    ReceivedCellListAction |
+    ReceivedStateAction
     ;
 
 const initialState: EventViewerState = {
@@ -31,6 +33,7 @@ const initialState: EventViewerState = {
     subscribeType: "*",
     subscribeObject: "*",
     cellList: [],
+    receivedState: {},
 };
 
 export default function reducer(state: EventViewerState = initialState, action: EventViewerActions) {
@@ -77,6 +80,12 @@ export default function reducer(state: EventViewerState = initialState, action: 
             return _.assign({}, state, {subscribeType: "*", subscribeObject: "*"});
         case ActionNames.ReceivedCellList:  
             return _.assign({}, state, {cellList: action.cellList});
+        case ActionNames.ReceivedState:  
+            const currentState = state.receivedState;
+            const receivedState = action.receivedState;
+            const nextState = _.assign({}, currentState[action.cell], receivedState);
+            currentState[action.cell] = nextState;
+            return _.assign({}, state, {receivedState: currentState});
         default: 
             return state;
         }

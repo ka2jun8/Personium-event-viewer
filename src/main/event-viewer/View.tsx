@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Card, Input, Button, Table, MessageBox, Select } from "element-react";
 import * as _ from "underscore";
+import * as moment from "moment";
 import { PersoniumAccessToken } from "personium-client";
 import { EventViewerState, } from "./reducer";
 import { EventViewerActionDispatcher } from "./Container";
@@ -15,6 +16,10 @@ interface Props {
 export const ALL_CELL = "All cell";
 
 export class EventViewer extends React.Component<Props, {}> {
+    onClickCheckState() {
+        this.props.actions.checkState();
+    }
+
     onChangeCell(value: string) {
         this.props.actions.changeCell(value);
     }
@@ -49,6 +54,47 @@ export class EventViewer extends React.Component<Props, {}> {
     }
 
     render() {
+        const receivedState = this.props.eventState.receivedState;
+        const stateList = receivedState?
+            Object.keys(receivedState).map((cell)=>{
+                const state = receivedState[cell];
+                const subscribedView = state.subscribes && state.subscribes.map((subscribe, index)=>{
+                    return (
+                        <div key={cell+".subscribe."+index} style={style.flexColumn}>
+                            <div style={style.flexRow}>
+                                <div style={{margin: 1}}>Type: </div>
+                                <div style={{margin: 1}}>{subscribe.type},</div>
+                                <div style={{margin: 1}}>Object: </div>
+                                <div style={{margin: 1}}>{subscribe.object}</div>
+                            </div>
+                        </div>
+                    );
+                });
+                return {
+                    cell: (
+                        <div>{cell}</div>
+                    ),
+                    authorized: (
+                        <div>{state.authorized? "Authorized":"Unauthorized"}</div>
+                    ),
+                    expire_time: (
+                        <div>{moment(state.expire_time).format("YYYY-MM-DD HH:mm:ss")}</div>
+                    ),
+                    subscribe_list: (
+                        <div>{subscribedView}</div>
+                    ),
+                };
+            }): [];
+
+        let stateTableView = <div/>
+        if(stateList.length > 0) {
+            stateTableView = <Table
+                style={{ width: "100%" }}
+                columns={StateTableColumns}
+                data={stateList}
+            />
+        }
+                
         const eventList: JSONEvent[] = this.props.eventState.eventList.map((event)=>{
             const _event: JSONEvent = _.assign({}, event);
             _event.Detail = null;
@@ -82,6 +128,17 @@ export class EventViewer extends React.Component<Props, {}> {
 
         return (
             <div>
+                <div style={style.header}>
+                    State
+                </div>
+                <div style={style.flexColumn}>
+                    <div style={{margin: 30}}>
+                        <Button type="primary" onClick={this.onClickCheckState.bind(this)}>Check State</Button>
+                    </div>
+                    <div style={style.table}>
+                        {stateTableView}
+                    </div>
+                </div>
                 <div style={style.header}>
                     Subscribe
                 </div>
@@ -195,6 +252,29 @@ const TableColumns = [
     //     prop: "External",
     //     width: 180,
     // },
+];
+
+const StateTableColumns = [
+    {
+        label: "Cell",
+        prop: "cell",
+        width: 130,
+    },
+    {
+        label: "authorized",
+        prop: "authorized",
+        width: 120,
+    },
+    {
+        label: "expire_time",
+        prop: "expire_time",
+        width: 200,
+    },
+    {
+        label: "subscribed",
+        prop: "subscribe_list",
+        width: 400,
+    },
 ];
 
 
