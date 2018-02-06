@@ -83,7 +83,7 @@ export default function reducer(state: RuleEditorState = initialState, action: R
                 result: false,
             };
         case ActionNames.ReceiveBoxList:
-            const boxNameList = action.boxList.map(box=>box.Name);
+            const boxNameList = _.union([], ["__"], action.boxList.map(box=>box.Name));
             return _.assign({}, state, {boxList: boxNameList});
         default: 
             return state;
