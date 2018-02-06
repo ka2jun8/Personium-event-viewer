@@ -58,7 +58,7 @@ export class EventViewer extends React.Component<Props, {}> {
         const stateList = receivedState?
             Object.keys(receivedState).map((cell)=>{
                 const state = receivedState[cell];
-                const subscribedView = state.subscribes && state.subscribes.map((subscribe, index)=>{
+                const subscribedView = state.subscriptions && state.subscriptions.map((subscribe, index)=>{
                     return (
                         <div key={cell+".subscribe."+index} style={style.flexColumn}>
                             <div style={style.flexRow}>
@@ -77,8 +77,8 @@ export class EventViewer extends React.Component<Props, {}> {
                     authorized: (
                         <div>{state.authorized? "Authorized":"Unauthorized"}</div>
                     ),
-                    expire_time: (
-                        <div>{moment(state.expire_time).format("YYYY-MM-DD HH:mm:ss")}</div>
+                    expires_in: (
+                        <div>{moment().add(state.expires_in, "seconds").format("YYYY-MM-DD HH:mm:ss")}</div>
                     ),
                     subscribe_list: (
                         <div>{subscribedView}</div>
@@ -266,8 +266,8 @@ const StateTableColumns = [
         width: 120,
     },
     {
-        label: "expire_time",
-        prop: "expire_time",
+        label: "expires_in",
+        prop: "expires_in",
         width: 200,
     },
     {

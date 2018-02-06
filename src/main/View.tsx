@@ -32,9 +32,10 @@ export interface Packet {
 export interface WebSocketState {
     response: string;
     cell?: string;
-    expire_time?: string;
-    subscribes?: {type: string, object: string}[];
+    expires_in?: number;
+    subscriptions?: {type: string, object: string}[];
     authorized?: boolean;
+    timestamp: number;
 }
 
 export interface JSONEvent {
