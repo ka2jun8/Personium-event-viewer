@@ -20,6 +20,10 @@ export class EventViewer extends React.Component<Props, {}> {
         this.props.actions.checkState();
     }
 
+    onClickReconnect() {
+        this.props.actions.reconnect();
+    }
+
     onChangeCell(value: string) {
         this.props.actions.changeCell(value);
     }
@@ -134,6 +138,7 @@ export class EventViewer extends React.Component<Props, {}> {
                 <div style={style.flexColumn}>
                     <div style={{margin: 30}}>
                         <Button type="primary" onClick={this.onClickCheckState.bind(this)}>Check State</Button>
+                        <Button type="primary" onClick={this.onClickReconnect.bind(this)}>Reconnect</Button>
                     </div>
                     <div style={style.table}>
                         {stateTableView}

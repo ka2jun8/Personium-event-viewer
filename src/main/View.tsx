@@ -72,7 +72,7 @@ export class Main extends React.Component<Props, {}> {
             };
             const onData = (packet: any)=>{
                 const dataJson = toJSON(packet);
-                // console.log("onData: dataJson:" , dataJson);
+                console.log("onData: dataJson:" , dataJson);
                 if(dataJson){
                     if(dataJson.RequestKey) {
                         // event
@@ -109,6 +109,11 @@ export class Main extends React.Component<Props, {}> {
             const wsman = WebSocketWrapperManager.getInstance();
             wsman.checkState();
             this.props.actions.checkedState();
+        }
+        if(this.props.mainState.reconnecting) {
+            const wsman = WebSocketWrapperManager.getInstance();
+            wsman.reconnect();
+            this.props.actions.reconnected();
         }
     }
 

@@ -15,6 +15,8 @@ export enum ActionNames {
     WebSocketInitialized = "main/websocket-initilized",
     CheckState = "main/check-state",
     CheckedState = "main/checked-state",
+    Reconnect = "main/reconnect",
+    Reconnected = "main/reconnected",
 }
 
 export interface LoginAction extends Action {
@@ -63,6 +65,14 @@ export interface CheckStateAction extends Action {
 
 export interface CheckedStateAction extends Action {
     type: ActionNames.CheckedState,
+}
+
+export interface ReconnectAction extends Action {
+    type: ActionNames.Reconnect,
+}
+
+export interface ReconnectedAction extends Action {
+    type: ActionNames.Reconnected,
 }
 
 
@@ -114,4 +124,11 @@ export const checkedState = (): CheckedStateAction => ({
     type: ActionNames.CheckedState,
 });
 
+export const reconnect = (): ReconnectAction => ({
+    type: ActionNames.Reconnect,
+});
+
+export const reconnected = (): ReconnectedAction => ({
+    type: ActionNames.Reconnected,
+});
 

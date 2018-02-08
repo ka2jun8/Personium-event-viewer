@@ -77,6 +77,17 @@ export class WebSocketWrapperManager {
         }
     }
     
+    reconnect(cell?: string) {
+        if(cell && this.wslist[cell]){
+            this.wslist[cell].reconnect();
+        }else {
+            Object.keys(this.wslist).forEach((cell) => {
+                if(this.wslist[cell]) {
+                    this.wslist[cell].reconnect();
+                }
+            });
+        }
+    }
     
 }
 
@@ -86,6 +97,9 @@ class WebSocketWrapper {
     token: string = null;
     ws: WebSocket = null;
     cell: string = null;
+    onConnect: ()=>void = null;
+    onData: (message: any)=>void = null;
+    onDisconnect: ()=>void = null;
 
     constructor(host: string, token: string) {
         this.host = host;
@@ -94,21 +108,24 @@ class WebSocketWrapper {
     enter(cell: string, onConnect: () => void, onData: (message: any) => void, onDisconnect: () => void) {
         this.cell = cell;
         const endpoint = "wss://"+this.host+"/"+cell+"/__event";
-        // console.log("connect WebSocket: ", endpoint );
+        this.onConnect = onConnect;
+        this.onData = onData;
+        this.onDisconnect = onDisconnect;
+        console.log("connect WebSocket: ", {endpoint, token: this.token} );
         this.ws = new WebSocket(endpoint);
         this.ws.onopen = () => {
             const tokenInfo = { access_token: this.token };
             this.ws.send(JSON.stringify(tokenInfo));
-            onConnect();
+            this.onConnect();
         }
         this.ws.onmessage = (message) => {
-            onData(message);
+            this.onData(message);
         }
         this.ws.onerror = (e) => {
             console.error("Error ", e);
         }
         this.ws.onclose = () => {
-            onDisconnect();
+            this.onDisconnect();
         }
     }
 
@@ -127,8 +144,19 @@ class WebSocketWrapper {
         this.ws.send(JSON.stringify(unsubscribeInfo));
     }
 
+    reconnect() {
+        this.ws.close();
+        setTimeout(()=>{
+            this.enter(this.cell, this.onConnect.bind(this), this.onData.bind(this), this.onDisconnect.bind(this));
+        }, 0);
+    }
+
     exit() {
         this.ws.close();
+        this.cell = null;
+        this.onConnect = null;
+        this.onData = null;
+        this.onDisconnect = null;
     }
 
     send(packet: any) {

@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 
 import {Main, Packet, WebSocketState} from "./View";
 import {ViewerType} from "./reducer";
-import {login, selectViewer, selectCell, connected, receiveEvent, websocketInitialized, checkedState} from "./action";
+import {login, selectViewer, selectCell, connected, receiveEvent, websocketInitialized, checkedState, reconnected} from "./action";
 import {reset, selectCell as selectCellForRuleViewer} from "./rule-viewer/action";
 import {selectCell as selectCellForEventViewer, receiveEvent as receiveEventForEventView, receivedState} from "./event-viewer/action";
 import {selectedCell as selectCellForRuleEditor, getBoxList as getBoxListForRuleEditor} from "./rule-editor/action";
@@ -47,6 +47,10 @@ export class MainActionDispatcher {
     
     checkedState() {
         this.dispatch(checkedState());
+    }
+
+    reconnected() {
+        this.dispatch(reconnected());
     }
 
     receiveState(cell: string, state: WebSocketState) {

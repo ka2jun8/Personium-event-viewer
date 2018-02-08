@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import {Dispatch} from "redux";
 import {EventViewer} from "./View";
 import {ReduxAction, ReduxState} from "../../store";
-import {receiveEvent as receiveEventForMainView, checkState} from "../action";
+import {receiveEvent as receiveEventForMainView, checkState, reconnect} from "../action";
 import { changeSubscribeType, changeSubscribeObject, subscribe, unsubscribe, selectCell } from "./action";
 
 export interface SubscribeCondition {
@@ -16,6 +16,10 @@ export class EventViewerActionDispatcher {
 
     checkState() {
         this.dispatch(checkState());
+    }
+
+    reconnect() {
+        this.dispatch(reconnect());
     }
 
     changeCell(cell: string) {
