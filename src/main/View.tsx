@@ -74,7 +74,7 @@ export class Main extends React.Component<Props, {}> {
                 const dataJson = toJSON(packet);
                 console.log("onData: dataJson:" , dataJson);
                 if(dataJson){
-                    if(dataJson.RequestKey) {
+                    if(dataJson.Type) {
                         // event
                         this.props.actions.receiveEvent(cell.Name, packet);
                     }else {
