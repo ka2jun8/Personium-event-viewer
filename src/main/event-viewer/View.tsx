@@ -99,15 +99,17 @@ export class EventViewer extends React.Component<Props, {}> {
             />
         }
                 
-        const eventList: JSONEvent[] = this.props.eventState.eventList.map((event)=>{
+        const eventList: JSONEvent[] = [];
+        for(let i = this.props.eventState.eventList.length-1; i >= 0; i--) {
+            const event = this.props.eventState.eventList[i];
             const _event: JSONEvent = _.assign({}, event);
             _event.Detail = null;
             const jsonText = _event && JSON.stringify(_event, null, "    ");
             _event.Detail = <span style={{ "float": "right" }}>
                                 <Button type="primary" onClick={this.onClickDetail.bind(this, jsonText)}>JSON</Button>
                             </span>;
-            return _event;
-        });
+            eventList.push(_event);
+        }
 
         let tableView = <div/>
         if(this.props.eventState.eventList.length > 0) {
