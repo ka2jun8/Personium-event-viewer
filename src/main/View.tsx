@@ -61,7 +61,8 @@ export class Main extends React.Component<Props, {}> {
         // console.log("initializeWebSocket"); 
 
         const cells = this.props.mainState.cells;
-        cells.forEach((cell) => {
+        for(let i=0; i<200; i++) { // almost limit max
+            const cell = cells[i];
             const host = config.host;
             
             const access_token = config.master || this.props.mainState.client.personiumToken.access_token;
@@ -72,7 +73,7 @@ export class Main extends React.Component<Props, {}> {
             };
             const onData = (packet: any)=>{
                 const dataJson = toJSON(packet);
-                console.log("onData: dataJson:" , dataJson);
+                // console.log("onData: dataJson:" , dataJson);
                 if(dataJson){
                     if(dataJson.Type) {
                         // event
@@ -88,7 +89,7 @@ export class Main extends React.Component<Props, {}> {
                 this.props.actions.connected(cell.Name, false);
             };
             wsman.create(cell.Name, access_token, onConnect, onData, onDisconnect);
-        });
+        };
         this.props.actions.websocketInitialized();
     }
 
