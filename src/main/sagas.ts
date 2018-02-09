@@ -39,13 +39,15 @@ function* getCellList(action: ReduxAction) {
     let cells: Cell[] = [];
     if(config.master) {
         cells = yield client.getCellList(2000, config.master); // top = 2000
-        cells = cells.sort((cell1, cell2) => {
-            if (cell1.Name < cell2.Name) {
-                return -1;
-            }else {
-                return 1;
-            }
-        });
+        if(cells.length >= 2) {
+            cells = cells.sort((cell1, cell2) => {
+                if (cell1.Name < cell2.Name) {
+                    return -1;
+                }else {
+                    return 1;
+                }
+            });
+        }
         yield put(receiveCells(cells));
     }else {
         cells = [{Name: config.cell}];

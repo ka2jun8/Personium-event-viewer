@@ -61,7 +61,11 @@ export class Main extends React.Component<Props, {}> {
         // console.log("initializeWebSocket"); 
 
         const cells = this.props.mainState.cells;
-        for(let i=0; i<200; i++) { // almost limit max
+        let length = cells.length;
+        if(length > 200) {
+            length = 200;
+        }
+        for(let i=0; i<length; i++) { // almost limit max
             const cell = cells[i];
             const host = config.host;
             
