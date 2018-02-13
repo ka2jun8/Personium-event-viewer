@@ -17,6 +17,8 @@ export enum ActionNames {
     CheckedState = "main/checked-state",
     Reconnect = "main/reconnect",
     Reconnected = "main/reconnected",
+    Exevent = "main/exevent",
+    Exevented = "main/exevent-ed",
 }
 
 export interface LoginAction extends Action {
@@ -73,6 +75,14 @@ export interface ReconnectAction extends Action {
 
 export interface ReconnectedAction extends Action {
     type: ActionNames.Reconnected,
+}
+
+export interface ExeventAction extends Action { 
+    type: ActionNames.Exevent,
+}
+
+export interface ExeventedAction extends Action { 
+    type: ActionNames.Exevented,
 }
 
 
@@ -132,3 +142,10 @@ export const reconnected = (): ReconnectedAction => ({
     type: ActionNames.Reconnected,
 });
 
+export const exevent = (): ExeventAction => ({
+    type: ActionNames.Exevent,
+});
+
+export const exevented = (): ExeventedAction => ({
+    type: ActionNames.Exevented,
+});

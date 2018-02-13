@@ -1,6 +1,6 @@
 import * as _ from "underscore";
 import {PersoniumClient, Rule, Cell} from "personium-client";
-import { ActionNames, SelecetViewAction, LoginSuccessAction, ReceiveCellsAction, SelectCellAction, ReceiveEventAction, ConnectedAction, WebSocketInitializedAction, CheckStateAction, CheckedStateAction, ReconnectAction, ReconnectedAction } from "./action";
+import { ActionNames, SelecetViewAction, LoginSuccessAction, ReceiveCellsAction, SelectCellAction, ReceiveEventAction, ConnectedAction, WebSocketInitializedAction, CheckStateAction, CheckedStateAction, ReconnectAction, ReconnectedAction, ExeventAction, ExeventedAction } from "./action";
 import { JSONEvent } from "./View";
 
 export enum ViewerType {
@@ -19,6 +19,7 @@ export interface MainState {
     websocketInitialized: boolean;
     stateChecking: boolean;
     reconnecting: boolean;
+    exevent: boolean;
 }
 
 export type MainActions =
@@ -32,7 +33,9 @@ export type MainActions =
      CheckStateAction |
      CheckedStateAction |
      ReconnectAction |
-     ReconnectedAction
+     ReconnectedAction | 
+     ExeventAction |
+     ExeventedAction
      ;
 
 const initialState: MainState = {
@@ -45,6 +48,7 @@ const initialState: MainState = {
     websocketInitialized: false,
     stateChecking: false,
     reconnecting: false,
+    exevent: false,
 };
 
 export default function reducer(state: MainState = initialState, action: MainActions) {
@@ -123,6 +127,10 @@ export default function reducer(state: MainState = initialState, action: MainAct
             return _.assign({}, state, {reconnecting: true});
         case ActionNames.Reconnected:
             return _.assign({}, state, {reconnecting: false});
+        case ActionNames.Exevent:
+            return _.assign({}, state, {exevent: true});
+        case ActionNames.Exevented:
+            return _.assign({}, state, {exevent: false});
         default: 
             return state;
     }

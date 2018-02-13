@@ -24,6 +24,10 @@ export class EventViewer extends React.Component<Props, {}> {
         this.props.actions.reconnect();
     }
 
+    onClickTestExEvent() {
+        this.props.actions.exevent();
+    }
+
     onChangeCell(value: string) {
         this.props.actions.changeCell(value);
     }
@@ -141,6 +145,7 @@ export class EventViewer extends React.Component<Props, {}> {
                     <div style={{margin: 30}}>
                         <Button type="primary" onClick={this.onClickCheckState.bind(this)}>Check State</Button>
                         <Button type="primary" onClick={this.onClickReconnect.bind(this)}>Reconnect</Button>
+                        <Button type="primary" onClick={this.onClickTestExEvent.bind(this)}>TestExEvent</Button>
                     </div>
                     <div style={style.table}>
                         {stateTableView}
@@ -211,7 +216,7 @@ export class EventViewer extends React.Component<Props, {}> {
 const TableColumns = [
     {
         label: "Date",
-        prop: "date",
+        prop: "datetime",
         width: 120,
     },
     {

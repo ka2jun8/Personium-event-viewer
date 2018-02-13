@@ -31,6 +31,7 @@ export interface Packet {
 
 export interface WebSocketState {
     response: string;
+    result: string;
     cell?: string;
     expires_in?: number;
     subscriptions?: {type: string, object: string}[];
@@ -40,7 +41,7 @@ export interface WebSocketState {
 
 export interface JSONEvent {
     Name?: string;
-    date?: string;
+    datetime?: string;
     Type: string;
     RequestKey: string; 
     Schema: string;
@@ -119,6 +120,11 @@ export class Main extends React.Component<Props, {}> {
             const wsman = WebSocketWrapperManager.getInstance();
             wsman.reconnect();
             this.props.actions.reconnected();
+        }
+        if(this.props.mainState.exevent) {
+            const wsman = WebSocketWrapperManager.getInstance();
+            wsman.exevent();
+            this.props.actions.exevented();
         }
     }
 

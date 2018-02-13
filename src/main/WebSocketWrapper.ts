@@ -88,6 +88,18 @@ export class WebSocketWrapperManager {
             });
         }
     }
+
+    exevent(cell?: string, event?: any) {
+        if(cell && this.wslist[cell]){
+            this.wslist[cell].exevent(event);
+        }else {
+            Object.keys(this.wslist).forEach((cell) => {
+                if(this.wslist[cell]) {
+                    this.wslist[cell].exevent(event);
+                }
+            });
+        }
+    }
     
 }
 
@@ -149,6 +161,26 @@ class WebSocketWrapper {
         setTimeout(()=>{
             this.enter(this.cell, this.onConnect.bind(this), this.onData.bind(this), this.onDisconnect.bind(this));
         }, 0);
+    }
+
+    exevent(event?: any) {
+        let jsonevent = {}
+        if(event) {
+            jsonevent = {event: {
+                Type: event.type,
+                Info: event.info,
+                Object: event.object,
+                Subject: event.subject,
+            }};
+        }else {
+            jsonevent = {event: {
+                Type: "type",
+                Info: "info",
+                Object: "object",
+                Subject: "subject",
+            }};
+        }
+        this.ws.send(JSON.stringify(jsonevent));
     }
 
     exit() {
