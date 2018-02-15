@@ -126,7 +126,7 @@ class WebSocketWrapper {
         console.log("connect WebSocket: ", {endpoint, token: this.token} );
         this.ws = new WebSocket(endpoint);
         this.ws.onopen = () => {
-            const tokenInfo = { access_token: this.token };
+            const tokenInfo = { AccessToken: this.token };
             this.ws.send(JSON.stringify(tokenInfo));
             this.onConnect();
         }
@@ -142,17 +142,17 @@ class WebSocketWrapper {
     }
 
     checkState() {
-        const state = {state: "all"};
+        const state = {State: "all"};
         this.ws.send(JSON.stringify(state));
     }
 
     subscribe(type: string, path: string) {
-        const subscribeInfo = { subscribe: { Type: type, Object: path } };
+        const subscribeInfo = { Subscribe: { Type: type, Object: path } };
         this.ws.send(JSON.stringify(subscribeInfo));
     }
 
     unsubscribe(type: string, path: string) {
-        const unsubscribeInfo = { unsubscribe: { Type: type, Object: path } };
+        const unsubscribeInfo = { Unsubscribe: { Type: type, Object: path } };
         this.ws.send(JSON.stringify(unsubscribeInfo));
     }
 
@@ -166,18 +166,18 @@ class WebSocketWrapper {
     exevent(event?: any) {
         let jsonevent = {}
         if(event) {
-            jsonevent = {event: {
+            jsonevent = {Event: {
                 Type: event.type,
                 Info: event.info,
                 Object: event.object,
-                Subject: event.subject,
+                RequestKey: event.RequestKey,
             }};
         }else {
-            jsonevent = {event: {
-                Type: "type",
-                Info: "info",
-                Object: "object",
-                Subject: "subject",
+            jsonevent = {Event: {
+                Type: "Type",
+                Info: "Info",
+                Object: "Object",
+                RequestKey: "RequestKey",
             }};
         }
         this.ws.send(JSON.stringify(jsonevent));

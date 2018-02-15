@@ -66,14 +66,14 @@ export class EventViewer extends React.Component<Props, {}> {
         const stateList = receivedState?
             Object.keys(receivedState).map((cell)=>{
                 const state = receivedState[cell];
-                const subscribedView = state.subscriptions && state.subscriptions.map((subscribe, index)=>{
+                const subscribedView = state.Subscriptions && state.Subscriptions.map((subscribe, index)=>{
                     return (
                         <div key={cell+".subscribe."+index} style={style.flexColumn}>
                             <div style={style.flexRow}>
                                 <div style={{margin: 1}}>Type: </div>
-                                <div style={{margin: 1}}>{subscribe.type},</div>
+                                <div style={{margin: 1}}>{subscribe.Type},</div>
                                 <div style={{margin: 1}}>Object: </div>
-                                <div style={{margin: 1}}>{subscribe.object}</div>
+                                <div style={{margin: 1}}>{subscribe.Object}</div>
                             </div>
                         </div>
                     );
@@ -82,11 +82,11 @@ export class EventViewer extends React.Component<Props, {}> {
                     cell: (
                         <div>{cell}</div>
                     ),
-                    authorized: (
-                        <div>{state.authorized? "Authorized":"Unauthorized"}</div>
+                    Authorized: (
+                        <div>{state.Authorized? "Authorized":"Unauthorized"}</div>
                     ),
-                    expires_in: (
-                        <div>{moment().add(state.expires_in, "seconds").format("YYYY-MM-DD HH:mm:ss")}</div>
+                    ExpiresIn: (
+                        <div>{moment().add(state.ExpiresIn, "seconds").format("YYYY-MM-DD HH:mm:ss")}</div>
                     ),
                     subscribe_list: (
                         <div>{subscribedView}</div>
@@ -216,12 +216,7 @@ export class EventViewer extends React.Component<Props, {}> {
 const TableColumns = [
     {
         label: "Date",
-        prop: "datetime",
-        width: 120,
-    },
-    {
-        label: "cellId",
-        prop: "cellId",
+        prop: "Timestamp",
         width: 120,
     },
     {
@@ -274,12 +269,12 @@ const StateTableColumns = [
     },
     {
         label: "authorized",
-        prop: "authorized",
+        prop: "Authorized",
         width: 120,
     },
     {
         label: "expires_in",
-        prop: "expires_in",
+        prop: "ExpiresIn",
         width: 200,
     },
     {

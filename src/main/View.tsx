@@ -30,25 +30,24 @@ export interface Packet {
 }
 
 export interface WebSocketState {
-    response: string;
-    result: string;
-    cell?: string;
-    expires_in?: number;
-    subscriptions?: {type: string, object: string}[];
-    authorized?: boolean;
-    timestamp: number;
+    Response: string;
+    Result: string;
+    Cell?: string;
+    ExpiresIn?: number;
+    Subscriptions?: {Type: string, Object: string}[];
+    Authorized?: boolean;
+    Timestamp: number;
 }
 
 export interface JSONEvent {
     Name?: string;
-    datetime?: string;
+    Timestamp?: string;
     Type: string;
     RequestKey: string; 
     Schema: string;
     External: boolean;
     Object: string;
     Info: string;
-    cellId: string;
     Subject: string;
     Detail?: any;
 }

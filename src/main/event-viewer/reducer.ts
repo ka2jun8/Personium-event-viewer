@@ -45,7 +45,7 @@ export default function reducer(state: EventViewerState = initialState, action: 
             if(text){
                 try {
                     json = JSON.parse(text);
-                    json.datetime = moment(json.datetime).format("YYYY-MM-DD HH:mm:ss");
+                    json.Timestamp = moment(json.Timestamp).format("YYYY-MM-DD HH:mm:ss");
                 }catch(e) {
                     console.error("not json data: ", text);
                 }
@@ -83,12 +83,14 @@ export default function reducer(state: EventViewerState = initialState, action: 
         case ActionNames.ReceivedState:  
             const currentState = state.receivedState;
             const receivedState = action.receivedState;
-            if(receivedState && receivedState.result === "success") {
+            if(receivedState && receivedState.Result === "success") {
                 const nextState = _.assign({}, currentState[action.cell], receivedState);
                 currentState[action.cell] = nextState;
-                currentState[action.cell].authorized = true;
+                currentState[action.cell].Authorized = true;
             }else {
-                currentState[action.cell].authorized = false;
+                const nextState = _.assign({}, currentState[action.cell], receivedState);
+                currentState[action.cell] = nextState;
+                currentState[action.cell].Authorized = false;
             }
             return _.assign({}, state, {receivedState: currentState});
         default: 
